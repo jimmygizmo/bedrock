@@ -1,0 +1,19 @@
+# To match versions exactly and guarantee proper, test-validated operation, install modules
+# using requirements-pinned.txt. This requirements.txt is only for when you want all the latest versions.
+
+# TODO: Some of these individual items come in with fastapi[all] so this list will be cleaned up, commented a little.
+
+fastapi[all]
+asyncpg
+python-dotenv
+asyncio
+
+requests
+pydantic
+gunicorn
+uvicorn
+pytest
+
+# passlib, for using bcrypt for password hashing
+passlib
+

@@ -1,0 +1,92 @@
+# DEVELOPMENT
+
+networks:
+  bedrock-network:
+
+volumes:
+  dbvolume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./dbvolume
+
+services:
+
+
+  # ---- POSTGRES ----    [DEV]
+  bedrock-postgres:
+    container_name: bedrock-postgres
+    build: ./postgres
+#    image: bedrock-postgres
+    image: ${AWS_USER_ID_NUMBER}.dkr.ecr.us-west-2.amazonaws.com/${AWS_REPO_NAME}:bedrock-postgres
+    restart: unless-stopped
+    networks:
+      - bedrock-network
+    ports:  # Not for production use:
+      - "45432:5432"
+    volumes:
+      - ./dbvolume:/bitnami/postgresql
+    environment:
+      - "POSTGRES_DB=bedrockdb"
+      - "POSTGRES_USER=bedrock"
+      - "POSTGRES_PASSWORD=bedrock"
+
+
+  # ---- PGADMIN ----    [DEV]
+  bedrock-pgadmin:
+    container_name: bedrock-pgadmin
+    build: ./pgadmin
+#    image: bedrock-pgadmin
+    image: ${AWS_USER_ID_NUMBER}.dkr.ecr.us-west-2.amazonaws.com/${AWS_REPO_NAME}:bedrock-pgadmin
+    depends_on:
+      - bedrock-postgres
+    restart: unless-stopped
+    networks:
+      - bedrock-network
+    ports:  # Not for production use:
+      - "45088:80"
+    environment:
+      - "PGADMIN_DEFAULT_EMAIL=bedrock@bedrock.zone"
+      - "PGADMIN_DEFAULT_PASSWORD=bedrock"
+
+
+  # ---- BEDROCK (FASTAPI) ----    [DEV]
+  # On PostgreSQL, uses logical DB Name: bedrockdb
+  bedrock-bedrock:
+    container_name: bedrock-bedrock
+    build: ./bedrock
+#    image: bedrock-bedrock
+    image: ${AWS_USER_ID_NUMBER}.dkr.ecr.us-west-2.amazonaws.com/${AWS_REPO_NAME}:bedrock-bedrock
+    depends_on:
+      - bedrock-postgres
+    restart: unless-stopped
+    networks:
+      - bedrock-network
+    ports:  # Not for production use:
+      - "48000:8000"
+    volumes:
+      - ./vol-env:/env
+    # TODO: At some point, double-quotes were thought to have caused problems in this environment section. Resolve.
+    environment:
+      - STACK_ENV=DEVELOPMENT
+      - FASTAPI_LOG_LEVEL=DEBUG
+      - POSTGRES_DB="bedrockdb"
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    command: [
+      "/appdir/wait-for-it.sh",
+      "--host=bedrock-postgres",
+      "--port=5432",
+      "--timeout=20",
+      "--",
+      "gunicorn",
+      "-w",
+      "4",
+      "-k",
+      "uvicorn.workers.UvicornWorker",
+      "magmastart:app",
+      "--bind",
+      "0.0.0.0:8000",
+    ]
+
