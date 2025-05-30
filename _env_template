@@ -1,0 +1,54 @@
+# .env - Bedrock
+# Location: <PROJECT-ROOT>
+# Environment: all
+# Project-level secrets. Nothing environment-specific.
+
+# NOTE: Other related locations of similar files or possible copies of this file:
+# /vol-env/.env
+# /anyreactproject/process.env    (not currently in use as of April 2025)
+
+
+# React default non-javascript index.html references this VAR to construct the favicon.ico URL.
+# THIS IS HERE FOR AN EXPERIMENT TO DETERMINE HOW TO HANDLE THIS VAR AND FOR FAVICON BEST PRACTICE ETC.
+# Ultimately the favicon matters almost not at all in dev, so we could just hardcode anything if necessary,
+# BUT HONESTLY, why would this ever need to be fully qualified? Should it not be absolute or relative and NOT
+# fully qualified?
+PUBLIC_URL="root----dot-env-test"
+
+
+# ---- AWS ----
+AWS_USER_ID_NUMBER="555555555555"
+AWS_REPO_NAME="your-aws-repo-name"
+
+
+# ---- DOT-ENV ID ----
+DOT_ENV_ID_ROOT="<PROJECT-ROOT>/.env"
+DOT_ENV_ID_VOL_ENV=""
+
+
+# ---- POSTGRES ----
+POSTGRES_USER="bedrock"
+POSTGRES_PASSWORD="bedrock"
+# NOTE: Both of these variables are also used by FASTAPI
+
+
+# ---- PGADMIN ----
+PGADMIN_DEFAULT_EMAIL="bedrock@bedrock.zone"
+PGADMIN_DEFAULT_PASSWORD="bedrock"
+
+
+# ---- FASTAPI ----
+# None at the moment
+
+
+# This file is used by python-dotenv and can be used by a Javascript ecosystem and other facilities as well.
+# Python-dotenv can search UP the directory structure for a .env file and so it is best to keep this at the project
+# root. Always make sure your .gitignore will KEEP THIS FILE OUT OF THE REPOSITORY. This is where you will configure
+# your secrets and other sensitive data for your applications. Mostly this is relevant here in the development context
+# but you could also use this same file as part of your entire pipeline and this file could also store production
+# values. In that case you would be doing environment-detection. There are many strategies. For proper security,
+# however, this file is best used for non-production environments. In production, likely in a cloud, you should
+# use the most secure method that cloud provides, which might also leverage environment variables, but they will be
+# secured in a vault service or the equivalent and there will be secure (non-plain text and non-host-resident) methods
+# of configuring your applications.
+
