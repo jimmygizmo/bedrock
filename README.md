@@ -124,15 +124,25 @@ When you create ve.bedrock with Pyenv you want to use Python version 3.10.9 to m
 in the running container. (see bedrock/Dockerfile). You will want to use the requirements-pinned.txt file so that
 all of your module versions in your local development environemt matches those in your deployed app.
 
-    pyenv install 3.10.9
+    > pyenv install 3.10.9
 
-    pyenv virtualenv 3.10.9 ve.bedrock
+    > pyenv virtualenv 3.10.9 ve.bedrock
 
-    For good measure, always:
-    pip install --upgrade pip
-    pip install --upgrade setuptools
+    For the best Python installs/upgrades, always upgrade pip and setuptools in a fresh virtual environment.
 
-    pip install -r requirements-pinned.txt
+    > pip install --upgrade pip
+    > pip install --upgrade setuptools
+
+    Install the large number of dependencies.
+
+    > pip install -r requirements-pinned.txt
+
+    Install the application module Magma itself.
+    First cd into the bedrock container directory so you are in the same directory as setup.py
+    You should then be inside /bedrock/bedrock/ (one-level deeper than the repo root of /bedrock/
+
+    > cd bedrock
+    > pip install .
 
 This is important for running your Python code locally, outside of Docker, but it is equally important so your
 powerful IDE with real-time analysis (such as PyCharm or VS Code) will operate properly and to its fullest potential.
@@ -155,7 +165,7 @@ This project has been authored, engineered and developed by James Mannix with bo
 
  More information at: [SmartMetal.ai](http://smartmetal.ai/ "SmartMetal.ai")
 
-This project is licensed under the [MIT License](./LICENSE).
+This project is licensed under the [MIT License](./LICENSE.txt).
 
 - ✅ Free to use, modify, and distribute
 - ✅ Commercial use allowed
