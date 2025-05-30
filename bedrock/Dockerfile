@@ -17,10 +17,10 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --upgrade pip
 RUN pip install --upgrade setuptools
 
-COPY requirements.txt /appdir/
+COPY requirements-pinned.txt /appdir/
 
 # Install all Python dependencies. (Magma application module installed separately below)
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements-pinned.txt
 
 # Magma application module package, ready for installation
 COPY ./magma/ /appdir/magma/

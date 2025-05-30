@@ -19,7 +19,8 @@ services:
     container_name: bedrock-postgres
     build: ./postgres
 #    image: bedrock-postgres
-    image: ${AWS_USER_ID_NUMBER}.dkr.ecr.us-west-2.amazonaws.com/${AWS_REPO_NAME}:bedrock-postgres
+#    image: ${AWS_USER_ID_NUMBER}.dkr.ecr.us-west-2.amazonaws.com/${AWS_REPO_NAME}:bedrock-postgres
+    image: 555555555555.dkr.ecr.us-west-2.amazonaws.com/your-aws-repo-name:bedrock-postgres
     restart: unless-stopped
     networks:
       - bedrock-network
@@ -31,6 +32,8 @@ services:
       - "POSTGRES_DB=bedrockdb"
       - "POSTGRES_USER=bedrock"
       - "POSTGRES_PASSWORD=bedrock"
+#      - "POSTGRES_USER=${POSTGRES_USER}"
+#      - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
 
 
   # ---- PGADMIN ----    [DEV]
@@ -38,7 +41,8 @@ services:
     container_name: bedrock-pgadmin
     build: ./pgadmin
 #    image: bedrock-pgadmin
-    image: ${AWS_USER_ID_NUMBER}.dkr.ecr.us-west-2.amazonaws.com/${AWS_REPO_NAME}:bedrock-pgadmin
+#    image: ${AWS_USER_ID_NUMBER}.dkr.ecr.us-west-2.amazonaws.com/${AWS_REPO_NAME}:bedrock-pgadmin
+    image: 555555555555.dkr.ecr.us-west-2.amazonaws.com/your-aws-repo-name:bedrock-pgadmin
     depends_on:
       - bedrock-postgres
     restart: unless-stopped
@@ -57,7 +61,8 @@ services:
     container_name: bedrock-bedrock
     build: ./bedrock
 #    image: bedrock-bedrock
-    image: ${AWS_USER_ID_NUMBER}.dkr.ecr.us-west-2.amazonaws.com/${AWS_REPO_NAME}:bedrock-bedrock
+#    image: ${AWS_USER_ID_NUMBER}.dkr.ecr.us-west-2.amazonaws.com/${AWS_REPO_NAME}:bedrock-bedrock
+    image: 555555555555.dkr.ecr.us-west-2.amazonaws.com/your-aws-repo-name:bedrock-bedrock
     depends_on:
       - bedrock-postgres
     restart: unless-stopped
@@ -69,11 +74,13 @@ services:
       - ./vol-env:/env
     # TODO: At some point, double-quotes were thought to have caused problems in this environment section. Resolve.
     environment:
-      - STACK_ENV=DEVELOPMENT
-      - FASTAPI_LOG_LEVEL=DEBUG
-      - POSTGRES_DB="bedrockdb"
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - "STACK_ENV=DEVELOPMENT"
+      - "FASTAPI_LOG_LEVEL=DEBUG"
+      - "POSTGRES_DB=bedrockdb"
+      - "POSTGRES_USER=bedrock"
+      - "POSTGRES_PASSWORD=bedrock"
+#      - "POSTGRES_USER=${POSTGRES_USER}"
+#      - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
     command: [
       "/appdir/wait-for-it.sh",
       "--host=bedrock-postgres",
