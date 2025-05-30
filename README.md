@@ -29,6 +29,7 @@
 ---------------------------------------------------------------------------
 
 ## Gold Mine of Modules - Ready for Release in June 2025
+
 The following powerful modules and features are all completely or mostly mature in my prototype Mega Stack and
 ready for release. Most or all will be added to Bedrock revisions here in early June 2025. Everything is under
 the same MIT License. This is all totally free Open Source.
@@ -62,6 +63,7 @@ the same MIT License. This is all totally free Open Source.
 ## Quick Set Up
 
 ### Clone the repository and then cd into it.
+
 You are now in the 'project root'. Most commands and actions, if not otherwise specified, should be done from this
 directory. The project root is the directory with docker-compose.yml in it.
 
@@ -70,15 +72,20 @@ directory. The project root is the directory with docker-compose.yml in it.
     cd bedrock
 
 ### Increase some directory permissions for database storage
-(Needed for Windows WSL for sure and ossibly others.) This command will give full permissions to the /dbvolume/
-directory where the large DB file structure will be written. You might have reasons later to do something
-similar again and you might in some cases need to use sudo.
+
+(Needed for Windows WSL for sure and possibly others.) This command will give full permissions to the /dbvolume/
+directory where the large DB file structure will be written by the PostgreSQL DB. You might have reasons later
+to do something similar again and you might in some cases need to use sudo. This is needed because the docker process behind
+Postgres is running at an elevated level. WSL handles this worse than macOS or Linux. Note that it is useful to
+completely wipe out all persisted DB data to cause the DB to be re-created fresh, sometimes frequently, and this
+is when you will most likely need those permissions. (I'll cover DB wiping during dev later.)
 
     sudo chomd -R 777 dbvolume 
 
 ---------------------------------------------------------------------------
 
 ## Start The Bedrock Stack
+
 On the first startup, Magma (the FastAPI Microservices Python app) will create all the database objects
 including the logical database itself, if necessary. The stack should work immediately. If not, simply restart it.
 
