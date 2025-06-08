@@ -1,62 +1,75 @@
-# Bedrock
 
-## The Bedrock Stack with Magma
+## Bedrock
 
-### ----==== The Ultimate Python Full Stack ====----
+#### =============
 
-#### *The core of Bedrock is "Magma", a premium Python FastAPI microservices module*
+### A Premium Python FastAPI Full Stack, Fully Loaded
 
----------------------------------------------------------------------------
+#### *The simplest, fastest, best-practice way to build an advanced full-stack solution.*
 
-### ✅ Fastest FastAPI Possible (the only fully asynchronous Python stack)
+#### 🟧 Complex Web Applications, Social Networks, Browser-based Games
 
-### ✅ Best-practice Python design patterns featuring Dependency Injection
+#### 🟦 Machine Learning, Data Science, RAG, Generative AI, ETL Pipeline
 
-### ✅ Clean FastAPI architecture: models, schemas, routers, services, core
+#### 🟩 Microservices, SAAS and PAAS, Integrations, Legacy Modernization
 
-### ✅ Automatic API docs & tools via both OpenAPI (aka Swagger) and Redocly
+#### 🟪 Websites, Dashboards, Monitoring, Communications (Pub/Sub/Queue)
 
-### ✅ The best-engineered stack available for both web applications & microservices
-
-### ✅ Latest PostgreSQL 17.2 RDBMS with pgAdmin 8.14 IDE (Pro DB Admin GUI)
-
-### ✅ Pydantic data validation - full coverage, with matching PyTest unit tests
-
-### ✅ Secret separation: clean, secure. Convenient for developers, safe for the repo
-
-### ✅ MIT License. Only requires attribution. Only prohibits re-distribution.
+#### 🟥 Automation, DevOps, CI/CD, SCM, Big Data (ML training). Cloud apps.
 
 ---------------------------------------------------------------------------
 
-## Gold Mine of Modules - Ready for Release in June 2025
+#### ✅ Fastest FastAPI Possible (the only fully asynchronous Python stack)
 
-The following powerful modules and features are all completely or mostly mature in my prototype Mega Stack and
+#### ✅ Best-practice Python design patterns featuring Dependency Injection
+
+#### ✅ Clean FastAPI architecture: models, schemas, routers, services, core
+
+#### ✅ Automatic API docs & tools via both OpenAPI (aka Swagger) and Redocly
+
+#### ✅ The best-engineered stack available for both web applications & microservices
+
+#### ✅ Latest PostgreSQL 17.2 RDBMS with pgAdmin 8.14 IDE (Pro DB Admin GUI)
+
+#### ✅ Pydantic data validation - full coverage, with matching PyTest unit tests
+
+#### ✅ Optional loaded Jupyter Notebook Server with .ipynb apps for this FastAPI
+
+#### ✅ Secret separation: clean, secure. Convenient for developers, safe for the repo
+
+#### ✅ MIT License. Only requires attribution. Only prohibits re-distribution.
+
+---------------------------------------------------------------------------
+
+### Gold Mine of Modules - Ready for Release in June 2025
+
+The following powerful modules and features are all completely or mostly mature in my prototype stack and
 ready for release. Most or all will be added to Bedrock revisions here in early June 2025. Everything is under
-the same MIT License. This is all totally free Open Source.
+the same MIT License. This is all totally free and Open Source.
 
-### 🔥 Authentication and Single Sign On (SSO) with JWT, OAuth 2 and more
+### 🔐 Authentication and Single Sign On (SSO) with JWT, OAuth 2 and more
 
-### 🔥 Application building-block API endpoints with roles-base authorization
+### 🧱 Application building-block API endpoints with roles-base authorization
 
-### 🔥 NGINX 1.23 Reverse Proxy and Accelerator Cache (fastest static content delivery)
+### 🚀 NGINX 1.23 Reverse Proxy and Accelerator Cache (fastest static content delivery)
 
-### 🔥 NGINX SSL/Security configuration: Highest-possible rating of A++
+### 🗝️ NGINX SSL/Security configuration: Highest-possible rating of A++
 
 ### 🔥 Redis cache, message queue and NoSQL store for acceleration, async processing
 
-### 🔥 Alembic for DB Migrations and high-quality mock-data seeding; developer friendly
+### 🛢️ Alembic for DB Migrations and high-quality mock-data seeding; developer friendly
 
-### 🔥 Premium React front end: TypeScript, React Router, Redux, Material UI
+### 🖥️ Premium React front end: TypeScript, React Router, Redux, Material UI
 
-### 🔥 Integration with Serverless PAAS like RunPod GPUs for AI/ML workloads
+### 🧠 Integration with Serverless PAAS like RunPod GPUs for AI/ML workloads
 
-### 🔥 AWS automation for Bedrock: Create, configure VMs. Deploy Bedrock easily
+### ☁️ AWS automation for Bedrock: Create, configure VMs. Deploy Bedrock easily
 
-### 🔥 GIS support in the DB and in GIS Magma modules for geospatial apps
+### 🌐 GIS support in the DB and in GIS Magma modules for geospatial apps
 
-### 🔥 Bedrock speaks REST by default but WebSocket and GraphQL modules are coming
+### 🔌 Bedrock speaks REST by default but WebSocket and GraphQL modules are coming
 
-### 🔥 All free. All expertly crafted and integrated by a 20-year professional developer
+### 💰 All free. All expertly crafted and integrated by a 20-year professional developer
 
 ---------------------------------------------------------------------------
 
@@ -96,6 +109,14 @@ including the logical database itself, if necessary. The stack should work immed
 You access port 48000 on localhost, since we map the default FastAPI port 8000 to 48000 outside the container.
 Bedrock always uses ports in the 40-thousand ranges when mapping outside the Compose stack:
 5432 -> 45432. 443 -> 44443, 8000 -> 48000, 80 -> 44080, etc.
+
+> **Note**: When internal service ports are mapped to 'Bedrock' ports outside the container, the mneumonic
+> used is to first choose a similar 44*** port number and then a 40*** number before other 4****
+> numbers to find the best mapping. Bedrock has many potential modules so this scheme will be used to make
+> sense of potentially many port numbers in a complex stack.
+
+### Use your Browser to have a look at the API. Try these URLs:
+
 
     For OpenAPI interactive docs and API tools, navigate to:
     https://127.0.0.1:48000/docs

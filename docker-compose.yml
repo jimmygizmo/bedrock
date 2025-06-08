@@ -72,7 +72,6 @@ services:
       - "48000:8000"
 #    volumes:
 #      - ./vol-env:/env
-    # TODO: At some point, double-quotes were thought to have caused problems in this environment section. Resolve.
     environment:
       - "STACK_ENV=DEVELOPMENT"
       - "FASTAPI_LOG_LEVEL=DEBUG"
@@ -95,5 +94,30 @@ services:
       "magmastart:app",
       "--bind",
       "0.0.0.0:8000",
+    ]
+
+
+  # ---- JUPYTER NOTEBOOK SERVER ----    [DEV]
+  bedrock-notebook:
+    container_name: bedrock-notebook
+    build: ./notebook
+    image: bedrock-notebook
+    depends_on:
+      - bedrock-bedrock
+      - bedrock-postgres
+    restart: unless-stopped
+    networks:
+      - bedrock-network
+    ports:
+      - "48888:8888"
+    environment:
+      - "JUPYTERLAB_SETTINGS_DIR=/home/bedrock/workspace"
+    command: [
+      "start-notebook.sh",
+      "--NotebookApp.token=''",
+      "--NotebookApp.password=''",
+      "--ServerApp.iopub_data_rate_limit=10000000",
+      "--ServerApp.rate_limit_window=10.0",
+      "--LabApp.default_url='/lab/tree/traffic.ipynb'",
     ]
 

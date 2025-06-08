@@ -1,0 +1,11 @@
+
+# These are the Python requirements for the Jupyter Notebook server container and our book.ipynb notebook.
+# running our LinkSpeed assignment client code.
+
+# NOTE: So your dev environment has everything, add any modules you need for your notebook server or
+# notebook file which you have here, into your main bedrock/requirements.txt file as well.
+
+#requests
+
+#pandas
+
