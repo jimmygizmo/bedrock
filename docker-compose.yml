@@ -88,13 +88,16 @@ services:
       "--",
       "gunicorn",
       "-w",
-      "4",
+      "1",
       "-k",
       "uvicorn.workers.UvicornWorker",
-      "magmastart:app",
+      "main:app",
       "--bind",
       "0.0.0.0:8000",
     ]
+# TODO: Normal worker count is 4 (argument above after -w) but the auto-seeding is brand
+#   new and I may want to have that only happen in one worker. So for now, I am only
+#   starting 1 worker. This will go back to 4 soon, after data seeding gets a little smarter.
 
 
   # ---- JUPYTER NOTEBOOK SERVER ----    [DEV]

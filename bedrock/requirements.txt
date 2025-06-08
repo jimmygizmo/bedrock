@@ -3,18 +3,55 @@
 
 # TODO: Some of these individual items come in with fastapi[all] so this list will be cleaned up, commented a little.
 
+# fastapi[all] - FastAPI framework full install, which include asynchronous components and more
 fastapi[all]
-asyncpg
-python-dotenv
-asyncio
+
+# sqlalchemy - Object Relational Mapper (ORM)
 sqlalchemy
 
+# asyncpg - The asynchronous PostgreSQL driver
+asyncpg
+
+# python-dotenv - Environment variable loading via .env files in the hierarchy
+python-dotenv
+
+# asyncio - Needed for asynchronous independent scripts like seed.py that need the DB.
+asyncio
+
+# greenlet - needed in some cases by SQLAlchemy when using run_sync and AsyncSessionLocal
+greenlet
+
+# Possibly only a notebook will use requests.
 requests
-pydantic
+
+# FastAPI workers
 gunicorn
 uvicorn
+
+# Unit test framework
 pytest
 
 # passlib, for using bcrypt for password hashing
 passlib
+
+
+# REQUIREMENTS FOR BEDROCK-GIS - KEPT HERE FOR CONVENIENCE UNTIL THE NEXT REV.
+# Everything new in Bedrock always merges into Bedrock-GIS for the most part. (For now, until I change the way
+# modularity is done, meaning a more of a plug-in type of architecture is coming.)
+
+# pandas, pyarrow - For parsing the Parquet columnar compressed file format
+#pandas
+#pyarrow
+
+# geopandas - For Seeder parsing of input data
+#geopandas
+
+# geoalchemy2 - Geospatial SQLAlchemy extensions
+#geoalchemy2
+
+# geojson-pydantic - For LineString data type for typing and Pydantic validation in schemas
+#geojson-pydantic
+
+# shapely - TODO: Describe (for GIS and more)
+#shapely
 

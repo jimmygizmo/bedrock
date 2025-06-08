@@ -29,7 +29,7 @@ COPY ./magma/ /appdir/magma/
 COPY ./tests/ /appdir/tests/
 
 # Entrypoint file
-COPY ./magmastart.py /appdir/
+COPY ./main.py /appdir/
 
 # setup.py enables pip installation of magma app module
 COPY ./setup.py /appdir/
@@ -39,5 +39,5 @@ RUN pip install .
 
 EXPOSE 8000
 
-CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "magmastart:app", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--bind", "0.0.0.0:8000"]
 
