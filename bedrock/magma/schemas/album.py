@@ -1,12 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator, ConfigDict
 from typing import Optional, List
-
-# FIXES FOR CIRCULAR IMPORTS - MOVED TO END AFTER ALL DEFS:
-# from magma.schemas.artist import ArtistRead  # FOR OUR CIRCULAR IMPORT FIX, DO NOT IMPORT THIS HERE AT THE TOP
-# from magma.schemas.track import TrackRead  # FOR OUR CIRCULAR IMPORT FIX, DO NOT IMPORT THIS HERE AT THE TOP
-
-# TODO: Move to magma.schemas.erp.shared
-from magma.schemas.shared import ArtistRead  # instead of from artist.py where we have the circular import
+from magma.schemas.shared import ArtistRead
 
 
 # ########    PYDANTIC SCHEMA:  album    ########
@@ -49,17 +43,6 @@ class AlbumUpdate(BaseModel):
 
 
 # -------- Used for response serialization (GET: /albums/1) --------
-# class AlbumRead(BaseModel):  # "flat read" - no joins
-#     album_id: int
-#     title: str
-#     artist_id: int
-#
-#     class Config:
-#         from_attributes = True
-#         populate_by_name = True
-
-
-# SHARED LIB FIX ATTEMPT 2 FOR CIRCULAR IMPORT
 class AlbumRead(BaseModel):
     album_id: int
     title: str
@@ -70,36 +53,13 @@ class AlbumRead(BaseModel):
         populate_by_name = True
 
 
-# FIX ATTEMPT FOR CIRCULAR IMPORT
-# -------- Used for response serialization (GET: /albums/1) --------
-# class AlbumRead(AlbumBase):
-#     album_id: int
-#     # artist_id: int
-#     artist: Optional["ArtistRead"]  # Forward reference as a string
-#     # tracks: Optional[List["TrackRead"]] = []  # Forward reference as a string
+# SQL CREATE from the original Chinook project for comparison with this Bedrock schema
 #
-#     # class Config:
-#     #     from_attributes = True
-#     #     populate_by_name = True
-#
-#
-# # Do NOT import ArtistRead at the top!
-# from magma.schemas.artist import ArtistRead
-# # from magma.schemas.track import TrackRead
-# AlbumRead.model_rebuild()
-
-
-# -------- Used for response serialization (GET: /albums/1) --------
-# EXAMPLE OF A JOIN SCHEMA
-# Uses imported schemas: ArtistRead, TrackRead
-# class AlbumDeepRead(BaseModel):  # "deep read" - includes relationships
-#     album_id: int
-#     title: str
-#     artist_id: int
-#     artist: Optional[ArtistRead] = None
-#     tracks: Optional[List[TrackRead]] = []
-#
-#     class Config:
-#         from_attributes = True
-#         populate_by_name = True
+# CREATE TABLE album
+# (
+#     album_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+#     title VARCHAR(160) NOT NULL,
+#     artist_id INT NOT NULL,
+#     CONSTRAINT album_pkey PRIMARY KEY  (album_id)
+# );
 

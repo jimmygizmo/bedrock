@@ -5,11 +5,6 @@ from typing import Optional, List, TYPE_CHECKING
 # from magma.schemas.invoice_line import InvoiceLineRead
 # from magma.schemas.playlist_track import PlaylistTrackRead
 
-# FIXES FOR CIRCULAR IMPORTS - MOVED TO END AFTER ALL DEFS:
-# from magma.schemas.album import AlbumRead  # FOR OUR CIRCULAR IMPORT FIX, DO NOT IMPORT THIS HERE AT THE TOP
-# if TYPE_CHECKING:
-#     from magma.schemas.album import AlbumRead
-
 
 # ########    PYDANTIC SCHEMA:  track    ########
 
@@ -87,7 +82,7 @@ class TrackRead(BaseModel):  # "flat read" - no joins
         populate_by_name = True
 
 
-# FIX ATTEMPT FOR CIRCULAR IMPORT
+# FIX ATTEMPT FOR CIRCULAR IMPORT - RETAINED FOR NOW - DOES ALSO SHOW INHERITANCE FROM TrackBase
 # -------- Used for response serialization (GET: /tracks/1) --------
 # class TrackRead(TrackBase):  # "flat read" - no joins
 #     track_id: int
@@ -127,3 +122,21 @@ class TrackRead(BaseModel):  # "flat read" - no joins
 #     class Config:
 #         from_attributes = True
 #         populate_by_name = True
+
+
+# SQL CREATE from the original Chinook project for comparison with this Bedrock schema
+#
+# CREATE TABLE track
+# (
+#     track_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+#     name VARCHAR(200) NOT NULL,
+#     album_id INT,
+#     media_type_id INT NOT NULL,
+#     genre_id INT,
+#     composer VARCHAR(220),
+#     milliseconds INT NOT NULL,
+#     bytes INT,
+#     unit_price NUMERIC(10,2) NOT NULL,
+#     CONSTRAINT track_pkey PRIMARY KEY  (track_id)
+# );
+

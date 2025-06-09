@@ -1,11 +1,6 @@
 from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import Optional, List
-
-# FIX FOR CIRCULAR IMPORTS - MOVED TO END AFTER ALL DEFS:
-# from magma.schemas.album import AlbumRead  # FOR OUR CIRCULAR IMPORT FIX, DO NOT IMPORT THIS HERE AT THE TOP
-
-# TODO: Move to magma.schemas.erp.shared
-from magma.schemas.shared import AlbumRead  # instead of from album.py where we have the circular import
+from magma.schemas.shared import AlbumRead
 
 
 # ########    PYDANTIC SCHEMA:  artist    ########
@@ -13,7 +8,7 @@ from magma.schemas.shared import AlbumRead  # instead of from album.py where we 
 
 # -------- Base schema shared across input/output --------
 class ArtistBase(BaseModel):
-    name: Optional[str] = None
+    name: Optional[str] = Field(None, alias="Name")
 
     class Config:
         from_attributes = True
@@ -45,16 +40,6 @@ class ArtistUpdate(BaseModel):
 
 
 # -------- Used for response serialization (GET: /artists/1) --------
-# class ArtistRead(ArtistBase):  # "flat read" - no joins
-#     artist_id: int
-#     name: Optional[str] = None
-#
-#     class Config:
-#         from_attributes = True
-#         populate_by_name = True
-
-
-# SHARED LIB FIX ATTEMPT 2 FOR CIRCULAR IMPORT
 class ArtistRead(BaseModel):
     artist_id: int
     name: str
@@ -65,32 +50,12 @@ class ArtistRead(BaseModel):
         populate_by_name = True
 
 
-# FIX ATTEMPT FOR CIRCULAR IMPORT
-# -------- Used for response serialization (GET: /artists/1) --------
-# class ArtistRead(ArtistBase):
-#     artist_id: int
-#     # albums: List["AlbumRead"] = []
-#     albums: Optional[List["AlbumRead"]] = []  # Forward reference as a string
+# SQL CREATE from the original Chinook project for comparison with this Bedrock schema
 #
-#     # class Config:
-#     #     from_attributes = True
-#     #     populate_by_name = True
-#
-#
-# # Do NOT import AlbumRead at the top!
-# from magma.schemas.album import AlbumRead
-# ArtistRead.model_rebuild()
-
-
-# -------- Used for response serialization (GET: /artists/1) --------
-# EXAMPLE OF A JOIN SCHEMA
-# Uses imported schema: AlbumRead which lives in schemas/album.py
-# class ArtistDeepRead(BaseModel):  # "deep read" - includes relationships
-#     artist_id: int
-#     name: Optional[str] = None
-#     albums: Optional[List[AlbumRead]] = []
-#
-#     class Config:
-#         from_attributes = True
-#         populate_by_name = True
+# CREATE TABLE artist
+# (
+#     artist_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+#     name VARCHAR(120),
+#     CONSTRAINT artist_pkey PRIMARY KEY  (artist_id)
+# );
 
