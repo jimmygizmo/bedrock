@@ -92,7 +92,7 @@ async def on_startup():
         result = await session.execute(select(func.count()).select_from(Album))
         row_count = result.scalar()
         if row_count == 0:
-            log.warn("⚠️  Album (albums) table is empty!!!  Seeding all ERP data...")
+            log.warn("⚠️  Album (albums) table is empty!!!  Seeding all ERP (Chinook) mock data...")
             log.warn("⚠️️  IMPORTANT!  ⛔  PLEASE WAIT UNTIL DATA LOADING COMPLETES IN A FEW MINUTES  ⛔")
             # IMPORTANT: For foreign key integrity, you must load in depdendency order - children first
             await load_artists(session, file_path="data/chinook/Artist.csv")

@@ -41,7 +41,7 @@
 
 ---------------------------------------------------------------------------
 
-### Gold Mine of Modules - Ready for Release in June 2025
+### Numerous powerful features are nearly ready for release and coming soon!
 
 The following powerful modules and features are all completely or mostly mature in my prototype stack and
 ready for release. Most or all will be added to Bedrock revisions here in early June 2025. Everything is under
@@ -184,8 +184,19 @@ lots of updates to this repo coming soon, valuable to my fellow developers most 
 
 ## Extensive Documentation, Guides, Tutorials
 
-### 🔥 A lot of documentation is complete or nearly ready and will be added soon!
+#### 🔥 *Extensive documentation is under development and coming soon!*
 
+### Chinook ERP Database Schema
+
+NOTE: Diagram shows PascalCase naming, which is supported in Magma through aliasing, making imports of the substantial
+Chinook mock data simpler. However other than the aliases, all DB objects are referenced Pythonically and per DB/ORM
+best practices and use lowercase_underscre naming and plural table names, with singlular model-related object names.
+A more accurate diagram is pending.
+
+![Diagram](extras/erp-schema-chinook.png)
+
+A lot more documentation is on the way. The project is currently well structured, clean and largely self-documenting,
+so don't delay in starting to build your amazing projects on Bedrock!
 
 ## License
 

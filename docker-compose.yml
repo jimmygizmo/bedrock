@@ -36,23 +36,23 @@ services:
 #      - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
 
 
-  # ---- PGADMIN ----    [DEV]
-  bedrock-pgadmin:
-    container_name: bedrock-pgadmin
-    build: ./pgadmin
-    image: bedrock-pgadmin
-#    image: ${AWS_USER_ID_NUMBER}.dkr.ecr.us-west-2.amazonaws.com/${AWS_REPO_NAME}:bedrock-pgadmin
-#    image: 555555555555.dkr.ecr.us-west-2.amazonaws.com/your-aws-repo-name:bedrock-pgadmin
-    depends_on:
-      - bedrock-postgres
-    restart: unless-stopped
-    networks:
-      - bedrock-network
-    ports:  # Not for production use:
-      - "45088:80"
-    environment:
-      - "PGADMIN_DEFAULT_EMAIL=bedrock@bedrock.zone"
-      - "PGADMIN_DEFAULT_PASSWORD=bedrock"
+#  # ---- PGADMIN (OPTIONAL) ----    [DEV]
+#  bedrock-pgadmin:
+#    container_name: bedrock-pgadmin
+#    build: ./pgadmin
+#    image: bedrock-pgadmin
+##    image: ${AWS_USER_ID_NUMBER}.dkr.ecr.us-west-2.amazonaws.com/${AWS_REPO_NAME}:bedrock-pgadmin
+##    image: 555555555555.dkr.ecr.us-west-2.amazonaws.com/your-aws-repo-name:bedrock-pgadmin
+#    depends_on:
+#      - bedrock-postgres
+#    restart: unless-stopped
+#    networks:
+#      - bedrock-network
+#    ports:  # Not for production use:
+#      - "45088:80"
+#    environment:
+#      - "PGADMIN_DEFAULT_EMAIL=bedrock@bedrock.zone"
+#      - "PGADMIN_DEFAULT_PASSWORD=bedrock"
 
 
   # ---- BEDROCK (FASTAPI) ----    [DEV]
@@ -100,27 +100,27 @@ services:
 #   starting 1 worker. This will go back to 4 soon, after data seeding gets a little smarter.
 
 
-  # ---- JUPYTER NOTEBOOK SERVER ----    [DEV]
-  bedrock-notebook:
-    container_name: bedrock-notebook
-    build: ./notebook
-    image: bedrock-notebook
-    depends_on:
-      - bedrock-bedrock
-      - bedrock-postgres
-    restart: unless-stopped
-    networks:
-      - bedrock-network
-    ports:
-      - "48888:8888"
-    environment:
-      - "JUPYTERLAB_SETTINGS_DIR=/home/bedrock/workspace"
-    command: [
-      "start-notebook.sh",
-      "--NotebookApp.token=''",
-      "--NotebookApp.password=''",
-      "--ServerApp.iopub_data_rate_limit=10000000",
-      "--ServerApp.rate_limit_window=10.0",
-      "--LabApp.default_url='/lab/tree/traffic.ipynb'",
-    ]
+  # ---- JUPYTER NOTEBOOK SERVER (OPTIONAL) ----    [DEV]
+#  bedrock-notebook:
+#    container_name: bedrock-notebook
+#    build: ./notebook
+#    image: bedrock-notebook
+#    depends_on:
+#      - bedrock-bedrock
+#      - bedrock-postgres
+#    restart: unless-stopped
+#    networks:
+#      - bedrock-network
+#    ports:
+#      - "48888:8888"
+#    environment:
+#      - "JUPYTERLAB_SETTINGS_DIR=/home/bedrock/workspace"
+#    command: [
+#      "start-notebook.sh",
+#      "--NotebookApp.token=''",
+#      "--NotebookApp.password=''",
+#      "--ServerApp.iopub_data_rate_limit=10000000",
+#      "--ServerApp.rate_limit_window=10.0",
+#      "--LabApp.default_url='/lab/tree/traffic.ipynb'",
+#    ]
 

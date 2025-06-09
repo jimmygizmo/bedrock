@@ -1,0 +1,160 @@
+
+
+Chinook ERP Database Schema
+===========================
+
+* Please refer to the schema diagram in the project at:
+/extras/erp-schema-chinook.png
+
+* Each model and each schema file has a copy of the SQL CREATE for the associated table. That is a good reference.
+
+
+** All of the SQL (PostreSQL dialect from the Chinook project) is included in this project in the file:
+Chinook_PostgreSql_AutoIncrementPKs.sql
+('auto-increments simply indicates this is a modern schema definition, using recent Postgres primary key mechanisms)'
+
+------------------------------------------------------------------------------------------------------------------------
+
+I find all four of the below to be nice perspectives on the shcema with different strengths in the formats.
+TODO: Make an even better expression of the schema, taking the best elemets from these.
+
+
+RELATIONSHIPS:
+==============
+
+Artist (1) → (many) Album
+
+Album (1) → (many) Track
+
+Track (many) → (1) Genre
+
+Track (many) → (1) MediaType
+
+Track (many) → (many) Playlist (via PlaylistTrack)
+
+Customer (many) → (1) Employee (SupportRepId)
+
+Invoice (1) → (many) InvoiceLine
+
+Customer (1) → (many) Invoice
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+📐 Tables & PKs
+===============
+
+artists (ArtistId PK)
+
+albums (AlbumId PK, ArtistId FK → artists.ArtistId)
+
+media_types (MediaTypeId PK)
+
+genres (GenreId PK)
+
+tracks (TrackId PK, FKs → albums, media_types, genres)
+
+customers (CustomerId PK, SupportRepId FK → employees.EmployeeId)
+
+employees (EmployeeId PK, ReportsTo FK → employees.EmployeeId)
+
+invoices (InvoiceId PK, CustomerId FK → customers.CustomerId)
+
+invoice_lines (InvoiceLineId PK, InvoiceId, TrackId FKs)
+
+playlists (PlaylistId PK)
+
+playlist_track (composite PK on PlaylistId + TrackId, FKs to playlists & tracks)
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+Relationships Overview
+======================
+
+artists (1) ────< albums (n)
+
+albums (1) ────< tracks (n)
+
+media_types (1) ────< tracks (n)
+
+genres (1) ────< tracks (n)
+
+tracks (n) ────<─ playlist_track ─> (n) playlists (many-to-many)
+
+employees (1) ────< customers (n) (via SupportRepId)
+
+employees (1) ────< direct reports (n) (via ReportsTo)
+
+customers (1) ────< invoices (n)
+
+invoices (1) ────< invoice_lines (n)
+
+tracks (1) ────< invoice_lines (n)
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+🗂 Schema Snapshot
+
+
+artists
+-------
+PK: ArtistId
+
+
+albums
+------
+PK: AlbumId
+FK: ArtistId → artists
+
+
+tracks
+------
+PK: TrackId
+FKs:
+    AlbumId → albums
+    MediaTypeId → media_types
+    GenreId → genres
+
+
+customers
+---------
+PK: CustomerId
+FK: SupportRepId → employees
+
+
+employees
+---------
+PK: EmployeeId
+FK: ReportsTo → employees
+
+
+invoices
+--------
+PK: InvoiceId
+FK: CustomerId → customers
+
+
+invoice_lines
+-------------
+PK: InvoiceLineId
+FKs:
+    InvoiceId → invoices
+    TrackId → tracks
+
+
+playlists
+---------
+PK: PlaylistId
+
+
+playlist_track
+--------------
+Composite PK: (PlaylistId, TrackId)
+FKs:
+    PlaylistId → playlists
+    TrackId → tracks
+
+------------------------------------------------------------------------------------------------------------------------
+
