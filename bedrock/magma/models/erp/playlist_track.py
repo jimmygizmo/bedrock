@@ -6,7 +6,7 @@ from magma.core.database import Base
 # ########    SQLALCHEMY MODEL:  playlist_tracks    ########
 
 # SPECIAL MODEL:  ASSOCIATION TABLE / MANY-TO-MANY JOIN TABLE
-# RELATIONSHIPS - A 'track' will be in multiple 'playlists' espeically if it is a popular 'track' - AND ALSO,
+# RELATIONSHIPS - A 'track' will be in multiple 'playlists' especially if it is a popular 'track' - AND ALSO,
 #   'playlists' are of course composed of multiple 'tracks'.
 
 

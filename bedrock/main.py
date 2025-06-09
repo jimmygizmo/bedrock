@@ -9,8 +9,20 @@ from magma.core.database import async_engine, Base
 
 # FOR SEEDING:
 from sqlalchemy import select, func
-from myapi.models.link import Link
-from myapi.seed.seed import load_links, load_speed_records
+from magma.models.erp.album import Album
+from magma.models.erp.artist import Artist
+from magma.models.erp.customer import Customer
+from magma.models.erp.employee import Employee
+from magma.models.erp.genre import Genre
+from magma.models.erp.invoice import Invoice
+from magma.models.erp.invoice_line import InvoiceLine
+from magma.models.erp.media_type import MediaType
+from magma.models.erp.playlist import Playlist
+from magma.models.erp.playlist_track import PlaylistTrack
+from magma.models.erp.track import Track
+
+from magma.seed.seed import load_albums, load_artists, load_customers, load_employees, load_genres, load_invoices
+from magma.seed.seed import load_invoice_lines, load_media_types, load_playlists, load_playlist_tracks, load_tracks
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -74,16 +86,25 @@ async def on_startup():
         expire_on_commit=False,
     )
 
-    # # TODO: CHANGE: Link (model), load_* methods, data filenames, log message wording
-    # # Automatic data seeding
-    # async with AsyncSessionLocal() as session:
-    #     result = await session.execute(select(func.count()).select_from(Link))
-    #     row_count = result.scalar()
-    #     if row_count == 0:
-    #         log.warn("⚠️  Links table is empty!!!  Seeding data...")
-    #         log.warn("⚠️️  IMPORTANT!  ⛔  PLEASE WAIT UNTIL DATA LOADING COMPLETES IN 3-4 MINUTES  ⛔")
-    #         await load_links(session, file_path="data/link_info.parquet.gz")
-    #         await load_speed_records(session, file_path="data/duval_jan1_2024.parquet.gz")
-    #     else:
-    #         log.info(f"Links table already has {row_count} rows. Skipping seed.")
+    # Automatic data seeding
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(select(func.count()).select_from(Album))
+        row_count = result.scalar()
+        if row_count == 0:
+            log.warn("⚠️  Album (albums) table is empty!!!  Seeding all ERP data...")
+            log.warn("⚠️️  IMPORTANT!  ⛔  PLEASE WAIT UNTIL DATA LOADING COMPLETES IN A FEW MINUTES  ⛔")
+            # await load_albums(session, file_path="data/chinook/Album.csv")
+            # await load_artists(session, file_path="data/chinook/Artist.csv")
+            #
+            # await load_customers(session, file_path="data/chinook/Customer.csv")
+            # await load_employees(session, file_path="data/chinook/Employee.csv")
+            # await load_genres(session, file_path="data/chinook/Genre.csv")
+            # await load_invoices(session, file_path="data/chinook/Invoice.csv")
+            # await load_invoice_lines(session, file_path="data/chinook/InvoiceLine.csv")
+            # await load_media_types(session, file_path="data/chinook/MediaType.csv")
+            # await load_playlists(session, file_path="data/chinook/Playlist.csv")
+            # await load_playlist_tracks(session, file_path="data/chinook/PlaylistTrack.csv")
+            await load_tracks(session, file_path="data/chinook/Track.csv")
+        else:
+            log.info(f"Album (albums) table already has {row_count} rows. Skipping seed.")
 

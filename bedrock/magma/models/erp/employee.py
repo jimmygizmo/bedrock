@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
-from sqlalchemy.orm import relationship, remote_side
+from sqlalchemy.orm import relationship
 from magma.core.database import Base
 
 
