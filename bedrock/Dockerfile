@@ -25,6 +25,9 @@ RUN pip install --no-cache-dir -r requirements-pinned.txt
 # Magma application module package, ready for installation
 COPY ./magma/ /appdir/magma/
 
+# Copy seed data
+COPY ./data/ /appdir/data/
+
 # Magma application module test suites (PyTest)
 COPY ./tests/ /appdir/tests/
 

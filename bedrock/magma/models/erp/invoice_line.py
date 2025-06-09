@@ -10,8 +10,8 @@ class InvoiceLine(Base):
     __tablename__ = "invoice_lines"
 
     invoice_line_id = Column("InvoiceLineId", Integer, primary_key=True, autoincrement=True)
-    invoice_id = Column("InvoiceId", Integer, ForeignKey("invoices.invoice_id"), nullable=False)
-    track_id = Column("TrackId", Integer, ForeignKey("tracks.track_id"), nullable=False)
+    invoice_id = Column("InvoiceId", Integer, ForeignKey("invoices.InvoiceId"), nullable=False)
+    track_id = Column("TrackId", Integer, ForeignKey("tracks.TrackId"), nullable=False)
     unit_price = Column("UnitPrice", Numeric(10, 2), nullable=False)
     quantity = Column("Quantity", Integer, nullable=False)
 

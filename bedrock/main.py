@@ -21,8 +21,9 @@ from magma.models.erp.playlist import Playlist
 from magma.models.erp.playlist_track import PlaylistTrack
 from magma.models.erp.track import Track
 
-from magma.seed.seed import load_albums, load_artists, load_customers, load_employees, load_genres, load_invoices
-from magma.seed.seed import load_invoice_lines, load_media_types, load_playlists, load_playlist_tracks, load_tracks
+from magma.seed.seed import load_albums, load_artists, load_tracks
+# from magma.seed.seed import load_albums, load_artists, load_customers, load_employees, load_genres, load_invoices
+# from magma.seed.seed import load_invoice_lines, load_media_types, load_playlists, load_playlist_tracks, load_tracks
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -93,18 +94,19 @@ async def on_startup():
         if row_count == 0:
             log.warn("⚠️  Album (albums) table is empty!!!  Seeding all ERP data...")
             log.warn("⚠️️  IMPORTANT!  ⛔  PLEASE WAIT UNTIL DATA LOADING COMPLETES IN A FEW MINUTES  ⛔")
-            # await load_albums(session, file_path="data/chinook/Album.csv")
-            # await load_artists(session, file_path="data/chinook/Artist.csv")
+            # IMPORTANT: For foreign key integrity, you must load in depdendency order - children first
+            await load_artists(session, file_path="data/chinook/Artist.csv")
+            await load_albums(session, file_path="data/chinook/Album.csv")
+            # await load_media_types(session, file_path="data/chinook/MediaType.csv")
+            # await load_genres(session, file_path="data/chinook/Genre.csv")
+            await load_tracks(session, file_path="data/chinook/Track.csv")
             #
             # await load_customers(session, file_path="data/chinook/Customer.csv")
             # await load_employees(session, file_path="data/chinook/Employee.csv")
-            # await load_genres(session, file_path="data/chinook/Genre.csv")
             # await load_invoices(session, file_path="data/chinook/Invoice.csv")
             # await load_invoice_lines(session, file_path="data/chinook/InvoiceLine.csv")
-            # await load_media_types(session, file_path="data/chinook/MediaType.csv")
             # await load_playlists(session, file_path="data/chinook/Playlist.csv")
             # await load_playlist_tracks(session, file_path="data/chinook/PlaylistTrack.csv")
-            await load_tracks(session, file_path="data/chinook/Track.csv")
         else:
             log.info(f"Album (albums) table already has {row_count} rows. Skipping seed.")
 

@@ -11,7 +11,8 @@ class Album(Base):
 
     album_id = Column("AlbumId", Integer, primary_key=True, autoincrement=True)
     title = Column("Title", String(160), nullable=False)
-    artist_id = Column("ArtistId", Integer, ForeignKey("artists.artist_id"), nullable=False)
+    # artist_id = Column("ArtistId", Integer, ForeignKey("artists.artist_id"), nullable=False)
+    artist_id = Column("ArtistId", Integer, ForeignKey("artists.ArtistId"), nullable=False)
 
     # RELATIONSHIP - Many 'albums' can come from a single 'artist':
     # ---- Album Many-to-one Artist (artists) - many albums to one artist

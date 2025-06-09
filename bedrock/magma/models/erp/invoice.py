@@ -10,7 +10,7 @@ class Invoice(Base):
     __tablename__ = "invoices"
 
     invoice_id = Column("InvoiceId", Integer, primary_key=True, autoincrement=True)
-    customer_id = Column("CustomerId", Integer, ForeignKey("customers.customer_id"), nullable=False)
+    customer_id = Column("CustomerId", Integer, ForeignKey("customers.CustomerId"), nullable=False)
     invoice_date = Column("InvoiceDate", DateTime, nullable=False)
     billing_address = Column("BillingAddress", String(70))
     billing_city = Column("BillingCity", String(40))

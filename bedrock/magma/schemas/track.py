@@ -1,10 +1,14 @@
 from pydantic import BaseModel, Field, field_validator, ConfigDict
-from typing import Optional, List
-from magma.schemas.album import AlbumRead
+from typing import Optional, List, TYPE_CHECKING
 # from magma.schemas.genre import GenreRead
 # from magma.schemas.media_type import MediaTypeRead
 # from magma.schemas.invoice_line import InvoiceLineRead
 # from magma.schemas.playlist_track import PlaylistTrackRead
+
+# FIXES FOR CIRCULAR IMPORTS - MOVED TO END AFTER ALL DEFS:
+# from magma.schemas.album import AlbumRead  # FOR OUR CIRCULAR IMPORT FIX, DO NOT IMPORT THIS HERE AT THE TOP
+# if TYPE_CHECKING:
+#     from magma.schemas.album import AlbumRead
 
 
 # ########    PYDANTIC SCHEMA:  track    ########
@@ -12,14 +16,14 @@ from magma.schemas.album import AlbumRead
 
 # -------- Base schema shared across input/output --------
 class TrackBase(BaseModel):
-    name: str
-    album_id: Optional[int] = None
-    media_type_id: int
-    genre_id: Optional[int] = None
-    composer: Optional[str] = None
-    milliseconds: int
-    bytes: Optional[int] = None
-    unit_price: float
+    name: str = Field(..., alias="Name")
+    album_id: Optional[int] = Field(None, alias="AlbumId")
+    media_type_id: int = Field(..., alias="MediaTypeId")
+    genre_id: Optional[int] = Field(None, alias="GenreId")
+    composer: Optional[str] = Field(None, alias="Composer")
+    milliseconds: int = Field(..., alias="Milliseconds")
+    bytes: Optional[int] = Field(None, alias="Bytes")
+    unit_price: float = Field(..., alias="UnitPrice")
 
     class Config:
         from_attributes = True
@@ -29,6 +33,7 @@ class TrackBase(BaseModel):
 # -------- Used for incoming POST data (POST: create a new track with new details) --------
 class TrackCreate(TrackBase):
 
+    # TODO: Enable this after ensuring our seed data is free of empty/no-value in this field.
     # Example validator placeholder
     # @classmethod
     # @field_validator('name')
@@ -80,6 +85,23 @@ class TrackRead(BaseModel):  # "flat read" - no joins
     class Config:
         from_attributes = True
         populate_by_name = True
+
+
+# FIX ATTEMPT FOR CIRCULAR IMPORT
+# -------- Used for response serialization (GET: /tracks/1) --------
+# class TrackRead(TrackBase):  # "flat read" - no joins
+#     track_id: int
+#
+#     album: Optional["AlbumRead"] = None  # Forward reference as a string
+#
+#     # class Config:
+#     #     from_attributes = True
+#     #     populate_by_name = True
+#
+#
+# # Do NOT import AlbumRead at the top!
+# from magma.schemas.album import AlbumRead
+# TrackRead.model_rebuild()
 
 
 # -------- Used for response serialization (GET: /albums/1) --------

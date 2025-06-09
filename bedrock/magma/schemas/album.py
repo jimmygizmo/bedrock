@@ -1,7 +1,12 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator, ConfigDict
 from typing import Optional, List
-from magma.schemas.artist import ArtistRead
-from magma.schemas.track import TrackRead
+
+# FIXES FOR CIRCULAR IMPORTS - MOVED TO END AFTER ALL DEFS:
+# from magma.schemas.artist import ArtistRead  # FOR OUR CIRCULAR IMPORT FIX, DO NOT IMPORT THIS HERE AT THE TOP
+# from magma.schemas.track import TrackRead  # FOR OUR CIRCULAR IMPORT FIX, DO NOT IMPORT THIS HERE AT THE TOP
+
+# TODO: Move to magma.schemas.erp.shared
+from magma.schemas.shared import ArtistRead  # instead of from artist.py where we have the circular import
 
 
 # ########    PYDANTIC SCHEMA:  album    ########
@@ -9,8 +14,9 @@ from magma.schemas.track import TrackRead
 
 # -------- Base schema shared across input/output --------
 class AlbumBase(BaseModel):
-    title: str
-    artist_id: int
+    album_id: int = Field(..., alias="AlbumId")
+    title: str = Field(..., alias="Title")
+    artist_id: int = Field(..., alias="ArtistId")
 
     class Config:
         from_attributes = True
@@ -43,14 +49,44 @@ class AlbumUpdate(BaseModel):
 
 
 # -------- Used for response serialization (GET: /albums/1) --------
-class AlbumRead(BaseModel):  # "flat read" - no joins
+# class AlbumRead(BaseModel):  # "flat read" - no joins
+#     album_id: int
+#     title: str
+#     artist_id: int
+#
+#     class Config:
+#         from_attributes = True
+#         populate_by_name = True
+
+
+# SHARED LIB FIX ATTEMPT 2 FOR CIRCULAR IMPORT
+class AlbumRead(BaseModel):
     album_id: int
     title: str
-    artist_id: int
+    artist: ArtistRead
 
     class Config:
         from_attributes = True
         populate_by_name = True
+
+
+# FIX ATTEMPT FOR CIRCULAR IMPORT
+# -------- Used for response serialization (GET: /albums/1) --------
+# class AlbumRead(AlbumBase):
+#     album_id: int
+#     # artist_id: int
+#     artist: Optional["ArtistRead"]  # Forward reference as a string
+#     # tracks: Optional[List["TrackRead"]] = []  # Forward reference as a string
+#
+#     # class Config:
+#     #     from_attributes = True
+#     #     populate_by_name = True
+#
+#
+# # Do NOT import ArtistRead at the top!
+# from magma.schemas.artist import ArtistRead
+# # from magma.schemas.track import TrackRead
+# AlbumRead.model_rebuild()
 
 
 # -------- Used for response serialization (GET: /albums/1) --------

@@ -21,7 +21,7 @@ class Customer(Base):
     phone = Column("Phone", String(24))
     fax = Column("Fax", String(24))
     email = Column("Email", String(60), nullable=False)
-    support_rep_id = Column("SupportRepId", Integer, ForeignKey("employees.employee_id"))
+    support_rep_id = Column("SupportRepId", Integer, ForeignKey("employees.EmployeeId"))
 
     # RELATIONSHIP - Many 'customers' can be assigned to an 'employee' who is also a 'support_rep':
     # ---- Customer Many-to-one Employee (employee AS support_rep) - many 'customers' to one 'employee'/'support_rep'

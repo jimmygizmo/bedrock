@@ -1,6 +1,11 @@
 from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import Optional, List
-from magma.schemas.album import AlbumRead
+
+# FIX FOR CIRCULAR IMPORTS - MOVED TO END AFTER ALL DEFS:
+# from magma.schemas.album import AlbumRead  # FOR OUR CIRCULAR IMPORT FIX, DO NOT IMPORT THIS HERE AT THE TOP
+
+# TODO: Move to magma.schemas.erp.shared
+from magma.schemas.shared import AlbumRead  # instead of from album.py where we have the circular import
 
 
 # ########    PYDANTIC SCHEMA:  artist    ########
@@ -40,13 +45,41 @@ class ArtistUpdate(BaseModel):
 
 
 # -------- Used for response serialization (GET: /artists/1) --------
-class ArtistRead(BaseModel):  # "flat read" - no joins
+# class ArtistRead(ArtistBase):  # "flat read" - no joins
+#     artist_id: int
+#     name: Optional[str] = None
+#
+#     class Config:
+#         from_attributes = True
+#         populate_by_name = True
+
+
+# SHARED LIB FIX ATTEMPT 2 FOR CIRCULAR IMPORT
+class ArtistRead(BaseModel):
     artist_id: int
-    name: Optional[str] = None
+    name: str
+    albums: List[AlbumRead] = []
 
     class Config:
         from_attributes = True
         populate_by_name = True
+
+
+# FIX ATTEMPT FOR CIRCULAR IMPORT
+# -------- Used for response serialization (GET: /artists/1) --------
+# class ArtistRead(ArtistBase):
+#     artist_id: int
+#     # albums: List["AlbumRead"] = []
+#     albums: Optional[List["AlbumRead"]] = []  # Forward reference as a string
+#
+#     # class Config:
+#     #     from_attributes = True
+#     #     populate_by_name = True
+#
+#
+# # Do NOT import AlbumRead at the top!
+# from magma.schemas.album import AlbumRead
+# ArtistRead.model_rebuild()
 
 
 # -------- Used for response serialization (GET: /artists/1) --------

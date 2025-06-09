@@ -13,8 +13,8 @@ from magma.core.database import Base
 class PlaylistTrack(Base):
     __tablename__ = "playlist_tracks"
 
-    playlist_id = Column("PlaylistId", Integer, ForeignKey("playlists.playlist_id"), primary_key=True)
-    track_id = Column("TrackId", Integer, ForeignKey("tracks.track_id"), primary_key=True)
+    playlist_id = Column("PlaylistId", Integer, ForeignKey("playlists.PlaylistId"), primary_key=True)
+    track_id = Column("TrackId", Integer, ForeignKey("tracks.TrackId"), primary_key=True)
 
     # RELATIONSHIP - Many 'playlist_tracks' will be on a single 'playlist' for them to be listened to together:
     # ---- PlaylistTrack Many-to-one Playlist (playlists) - many playlist_tracks to one playlist

@@ -11,9 +11,9 @@ class Track(Base):
 
     track_id = Column("TrackId", Integer, primary_key=True, autoincrement=True)
     name = Column("Name", String(200), nullable=False)
-    album_id = Column("AlbumId", Integer, ForeignKey("albums.album_id"))
-    media_type_id = Column("MediaTypeId", Integer, ForeignKey("media_types.media_type_id"), nullable=False)
-    genre_id = Column("GenreId", Integer, ForeignKey("genres.genre_id"))
+    album_id = Column("AlbumId", Integer, ForeignKey("albums.AlbumId"))
+    media_type_id = Column("MediaTypeId", Integer, ForeignKey("media_types.MediaTypeId"), nullable=False)
+    genre_id = Column("GenreId", Integer, ForeignKey("genres.GenreId"))
     composer = Column("Composer", String(220))
     milliseconds = Column("Milliseconds", Integer, nullable=False)
     bytes = Column("Bytes", Integer)

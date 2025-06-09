@@ -13,7 +13,7 @@ class Employee(Base):
     last_name = Column("LastName", String(20), nullable=False)
     first_name = Column("FirstName", String(20), nullable=False)
     title = Column("Title", String(30))
-    reports_to = Column("ReportsTo", Integer, ForeignKey("employees.employee_id"))
+    reports_to = Column("ReportsTo", Integer, ForeignKey("employees.EmployeeId"))
     birth_date = Column("BirthDate", DateTime)
     hire_date = Column("HireDate", DateTime)
     address = Column("Address", String(70))
