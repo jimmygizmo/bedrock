@@ -2,7 +2,10 @@ from fastapi import APIRouter, HTTPException
 from magma.core.logger import log
 from magma.schemas.user import UserCreate, UserRead
 from magma.services.user import create_user, get_user, get_users
-from magma.core.dependencies import AsyncSessionDep  # TODO: This may become magma.core.dependencies
+from magma.core.dependencies import AsyncSessionDep
+
+
+# ########    ROUTER:  user    ########
 
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -16,7 +19,7 @@ async def create_new_user(session: AsyncSessionDep, user: UserCreate):
 
 @router.get("/{user_id}", response_model=UserRead)
 async def read_user(session: AsyncSessionDep, user_id: int):
-    log.info(f"🧊  ----> /users/{user_id}")
+    log.info(f"🧊  ----> /users/{user_id}    GET SINGLE")
     one_user = await get_user(session, user_id)
     if one_user is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -25,6 +28,6 @@ async def read_user(session: AsyncSessionDep, user_id: int):
 
 @router.get("/", response_model=list[UserRead])
 async def read_users(session: AsyncSessionDep, skip: int = 0, limit: int = 10):
-    log.info(f"🧊  ----> /users/")
+    log.info(f"🧊  ----> /users/    GET ALL (paged)")
     return await get_users(session, skip=skip, limit=limit)
 

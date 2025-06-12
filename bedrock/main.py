@@ -4,8 +4,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import magma.core.config as cfg
 from magma.core.logger import log
-from magma.routers import users
 from magma.core.database import async_engine, Base
+from magma.routers import users
+from magma.erp.routers import genres
 
 # FOR SEEDING:
 from sqlalchemy import select, func
@@ -64,6 +65,7 @@ app.add_middleware(
 # ########  ROUTERS  ########
 
 app.include_router(users.router)  # Users
+app.include_router(genres.router)  # Genres
 
 
 # ########  ROOT API HANDLERS  ########
