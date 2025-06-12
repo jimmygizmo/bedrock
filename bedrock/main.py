@@ -9,19 +9,19 @@ from magma.core.database import async_engine, Base
 
 # FOR SEEDING:
 from sqlalchemy import select, func
-from magma.models.erp.album import Album
-from magma.models.erp.artist import Artist
-from magma.models.erp.customer import Customer
-from magma.models.erp.employee import Employee
-from magma.models.erp.genre import Genre
-from magma.models.erp.invoice import Invoice
-from magma.models.erp.invoice_line import InvoiceLine
-from magma.models.erp.media_type import MediaType
-from magma.models.erp.playlist import Playlist
-from magma.models.erp.playlist_track import PlaylistTrack
-from magma.models.erp.track import Track
+from magma.erp.models.album import Album
+from magma.erp.models.artist import Artist
+from magma.erp.models.customer import Customer
+from magma.erp.models.employee import Employee
+from magma.erp.models.genre import Genre
+from magma.erp.models.invoice import Invoice
+from magma.erp.models.invoice_line import InvoiceLine
+from magma.erp.models.media_type import MediaType
+from magma.erp.models.playlist import Playlist
+from magma.erp.models.playlist_track import PlaylistTrack
+from magma.erp.models.track import Track
 
-from magma.seed.seed import load_albums, load_artists, load_tracks
+from magma.seed.seed import load_genres, load_media_types, load_albums, load_artists, load_tracks
 # from magma.seed.seed import load_albums, load_artists, load_customers, load_employees, load_genres, load_invoices
 # from magma.seed.seed import load_invoice_lines, load_media_types, load_playlists, load_playlist_tracks, load_tracks
 from sqlalchemy.orm import sessionmaker
@@ -95,11 +95,11 @@ async def on_startup():
             log.warn("⚠️  Album (albums) table is empty!!!  Seeding all ERP (Chinook) mock data...")
             log.warn("⚠️️  IMPORTANT!  ⛔  PLEASE WAIT UNTIL DATA LOADING COMPLETES IN A FEW MINUTES  ⛔")
             # IMPORTANT: For foreign key integrity, you must load in depdendency order - children first
+            await load_genres(session, file_path="data/chinook/Genre.csv")
+            await load_media_types(session, file_path="data/chinook/MediaType.csv")
             await load_artists(session, file_path="data/chinook/Artist.csv")
-            await load_albums(session, file_path="data/chinook/Album.csv")
-            # await load_media_types(session, file_path="data/chinook/MediaType.csv")
-            # await load_genres(session, file_path="data/chinook/Genre.csv")
-            await load_tracks(session, file_path="data/chinook/Track.csv")
+            # await load_albums(session, file_path="data/chinook/Album.csv")
+            # await load_tracks(session, file_path="data/chinook/Track.csv")
             #
             # await load_customers(session, file_path="data/chinook/Customer.csv")
             # await load_employees(session, file_path="data/chinook/Employee.csv")
@@ -109,4 +109,19 @@ async def on_startup():
             # await load_playlist_tracks(session, file_path="data/chinook/PlaylistTrack.csv")
         else:
             log.info(f"Album (albums) table already has {row_count} rows. Skipping seed.")
+
+
+# Based on relationships in the well-known Chinook DB schema, we must load the CSV mock data in the
+# correct child-parent order of dependency. This is the order configured above:
+# 1.   Genre
+# 2.   MediaType
+# 3.   Artist
+# 4.   Album (depends on Artist)
+# 5.   Track (depends on Album, Genre, MediaType)
+# 6.   Employee (self-referencing for ReportsTo)
+# 7.   Customer (depends on Employee via SupportRepId)
+# 8.   Invoice (depends on Customer)
+# 9.   InvoiceLine (depends on Invoice, Track)
+# 10.  Playlist
+# 11.  PlaylistTrack (depends on Playlist, Track)
 

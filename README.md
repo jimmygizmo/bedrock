@@ -43,8 +43,8 @@
 
 ### Numerous powerful features are nearly ready for release and coming soon!
 
-The following powerful modules and features are all completely or mostly mature in my prototype stack and
-ready for release. Most or all will be added to Bedrock revisions here in early June 2025. Everything is under
+The following powerful modules and features are all completely or mostly mature in the prototype stack and
+ready for release. Most or all will be added to Bedrock revisions here in June 2025. Everything is under
 the same MIT License. This is all totally free and Open Source.
 
 ### 🔐 Authentication and Single Sign On (SSO) with JWT, OAuth 2 and more
@@ -189,8 +189,8 @@ lots of updates to this repo coming soon, valuable to my fellow developers most 
 ### Chinook ERP Database Schema
 
 NOTE: Diagram shows PascalCase naming, which is supported in Magma through aliasing, making imports of the substantial
-Chinook mock data simpler. However other than the aliases, all DB objects are referenced Pythonically and per DB/ORM
-best practices and use lowercase_underscre naming and plural table names, with singlular model-related object names.
+Chinook mock data simpler. However other than the aliases, all DB objects are referenced pythonically and per DB/ORM
+best practices and use lowercase_underscore naming and plural table names, with singlular model-related object names.
 A more accurate diagram is pending.
 
 ![Diagram](extras/erp-schema-chinook.png)
