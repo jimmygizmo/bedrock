@@ -24,7 +24,8 @@ class Invoice(Base):
     customer = relationship("Customer", back_populates="invoices")
     # RELATIONSHIP - An 'invoice' often has multiple 'invoice_lines' from a variety of items being purchased at once:
     # ---- Invoice One-to-many InvoiceLine (invoice_lines) - one invoice to many invoice_lines
-    invoice_lines = relationship("InvoiceLine", back_populates="invoice")
+    # **** SOLN67 **** DISABLING - see special __init__ file
+    # invoice_lines = relationship("InvoiceLine", back_populates="invoice")
 
 
 # SQL CREATE from the original Chinook project for comparison with this Bedrock model

@@ -17,7 +17,8 @@ class InvoiceLine(Base):
 
     # RELATIONSHIP - Many 'invoice_lines' can belong to a single 'invoice' when they are purchased together:
     # ---- InvoiceLine Many-to-one Invoice (invoice) - many 'invoice_lines' to one 'invoice'
-    invoice = relationship("Invoice", back_populates="invoice_lines")
+    # ****SOLN67**** - DISABLING THIS TO ADDRESS A CIRCULAR RELATIONSHIP AND IMPORT ORDER
+    # invoice = relationship("Invoice", back_populates="invoice_lines")
     # RELATIONSHIP - Many 'invoice_lines' can be for a single 'track' because many copies of a 'track' can be sold:
     # ---- InvoiceLine Many-to-one Track (track) - many invoice_lines to one track
     track = relationship("Track", back_populates="invoice_lines")

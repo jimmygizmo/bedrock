@@ -17,7 +17,8 @@ class Genre(Base):
     tracks = relationship("Track", back_populates="genre")
 
 
-# SQL CREATE from the original Chinook project for comparison with this Bedrock model
+# --------  REFERENCE  --------
+# SQL CREATE from the original Chinook project
 #
 # CREATE TABLE genre
 # (

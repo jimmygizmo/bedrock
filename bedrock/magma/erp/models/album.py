@@ -16,7 +16,8 @@ class Album(Base):
 
     # RELATIONSHIP - Many 'albums' can come from a single 'artist':
     # ---- Album Many-to-one Artist (artists) - many albums to one artist
-    artist = relationship("Artist", back_populates="albums")
+    # **** SOLN67 **** DISABLING. SEE SPECIAL __init__
+    # artist = relationship("Artist", back_populates="albums")
 
     # RELATIONSHIP - An 'album' usually has multiple 'tracks' with the average being around 10-14 'tracks':
     # ---- Album One-to-many Track (tracks) - one album to many tracks

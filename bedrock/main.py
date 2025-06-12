@@ -10,19 +10,25 @@ from magma.erp.routers import genres
 
 # FOR SEEDING:
 from sqlalchemy import select, func
-from magma.erp.models.album import Album
-from magma.erp.models.artist import Artist
-from magma.erp.models.customer import Customer
-from magma.erp.models.employee import Employee
-from magma.erp.models.genre import Genre
-from magma.erp.models.invoice import Invoice
-from magma.erp.models.invoice_line import InvoiceLine
-from magma.erp.models.media_type import MediaType
-from magma.erp.models.playlist import Playlist
-from magma.erp.models.playlist_track import PlaylistTrack
-from magma.erp.models.track import Track
 
-from magma.seed.seed import load_genres, load_media_types, load_albums, load_artists, load_tracks
+# **** SOLN67 #### This is related to special code inside /magma/erp/models/__init__.py
+# This works with the __init__ to make sure all models are defined/imported before string-based relations made.
+from magma.erp import models
+
+from magma.erp.models.album import Album  # Currently only checking Album to detect need for data seeding entire DB.
+# Models are only needed in main.py for the 'select' to detect the need for seeding in any perticular table.
+# from magma.erp.models.artist import Artist
+# from magma.erp.models.customer import Customer
+# from magma.erp.models.employee import Employee
+# from magma.erp.models.genre import Genre
+# from magma.erp.models.invoice import Invoice
+# from magma.erp.models.invoice_line import InvoiceLine
+# from magma.erp.models.media_type import MediaType
+# from magma.erp.models.playlist import Playlist
+# from magma.erp.models.playlist_track import PlaylistTrack
+# from magma.erp.models.track import Track
+
+from magma.seed.seed import load_genres, load_media_types, load_artists, load_albums, load_tracks
 # from magma.seed.seed import load_albums, load_artists, load_customers, load_employees, load_genres, load_invoices
 # from magma.seed.seed import load_invoice_lines, load_media_types, load_playlists, load_playlist_tracks, load_tracks
 from sqlalchemy.orm import sessionmaker
@@ -91,7 +97,7 @@ async def on_startup():
 
     # Automatic data seeding
     async with AsyncSessionLocal() as session:
-        result = await session.execute(select(func.count()).select_from(Album))
+        result = await session.execute(select(func.count()).select_from(models.album.Album))
         row_count = result.scalar()
         if row_count == 0:
             log.warn("⚠️  Album (albums) table is empty!!!  Seeding all ERP (Chinook) mock data...")
@@ -100,8 +106,8 @@ async def on_startup():
             await load_genres(session, file_path="data/chinook/Genre.csv")
             await load_media_types(session, file_path="data/chinook/MediaType.csv")
             await load_artists(session, file_path="data/chinook/Artist.csv")
-            # await load_albums(session, file_path="data/chinook/Album.csv")
-            # await load_tracks(session, file_path="data/chinook/Track.csv")
+            await load_albums(session, file_path="data/chinook/Album.csv")
+            await load_tracks(session, file_path="data/chinook/Track.csv")
             #
             # await load_customers(session, file_path="data/chinook/Customer.csv")
             # await load_employees(session, file_path="data/chinook/Employee.csv")
