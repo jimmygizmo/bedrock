@@ -24,8 +24,8 @@ class Album(Base):
     tracks = relationship("Track", back_populates="album")
 
 
-# SQL CREATE from the original Chinook project for comparison with this Bedrock model
-#
+# --------  REFERENCE  --------
+# NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.
 # CREATE TABLE album
 # (
 #     album_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,

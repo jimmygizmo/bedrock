@@ -20,6 +20,11 @@ from magma.erp.models.artist import Artist
 from magma.erp.models.album import Album  # Album is only table checked to decide if the DB needs to be seeded
 from magma.erp.models.track import Track
 from magma.erp.models.employee import Employee
+from magma.erp.models.customer import Customer
+from magma.erp.models.invoice import Invoice
+from magma.erp.models.invoice_line import InvoiceLine
+from magma.erp.models.playlist import Playlist
+from magma.erp.models.playlist_track import PlaylistTrack
 # Schemas for seeding
 from magma.erp.schemas.genre import GenreCreate
 from magma.erp.schemas.media_type import MediaTypeCreate
@@ -27,6 +32,12 @@ from magma.erp.schemas.artist import ArtistCreate
 from magma.erp.schemas.album import AlbumCreate
 from magma.erp.schemas.track import TrackCreate
 from magma.erp.schemas.employee import EmployeeCreate
+from magma.erp.schemas.customer import CustomerCreate
+from magma.erp.schemas.invoice import InvoiceCreate
+from magma.erp.schemas.invoice_line import InvoiceLineCreate
+from magma.erp.schemas.playlist import PlaylistCreate
+from magma.erp.schemas.playlist_track import PlaylistTrackCreate
+# Seeder
 from magma.seed.seed import load_csv
 
 
@@ -90,64 +101,179 @@ async def on_startup():
         expire_on_commit=False,
     )
 
-    # Automatic data seeding
+    # ########  AUTOMATIC DATA SEEDING  ########
     async with AsyncSessionLocal() as session:
         result = await session.execute(select(func.count()).select_from(Album))
         row_count = result.scalar()
         if row_count == 0:
             log.warn("⚠️  Album (albums) table is empty!!!  Seeding all ERP (Chinook) mock data...")
             log.warn("⚠️️  IMPORTANT!  ⛔  PLEASE WAIT UNTIL DATA LOADING COMPLETES IN A FEW MINUTES  ⛔")
+            # TODO: Add maintenance mode which disable all of API. Enter maintenance mode here.
             # Loading in depdendency order (children first). See table dependency comments at the end of this file.
-            await load_csv(
-                    session,
-                    model_name='genre',
-                    file_path="data/chinook/Genre.csv",
-                    pydantic_create_schema=GenreCreate,
-                    sqlalchemy_model=Genre,
-                )
-            await load_csv(
-                    session,
-                    model_name='media_type',
-                    file_path="data/chinook/MediaType.csv",
-                    pydantic_create_schema=MediaTypeCreate,
-                    sqlalchemy_model=MediaType,
-                )
-            await load_csv(
-                    session,
-                    model_name='artist',
-                    file_path="data/chinook/Artist.csv",
-                    pydantic_create_schema=ArtistCreate,
-                    sqlalchemy_model=Artist,
-                )
-            await load_csv(
-                    session,
-                    model_name='album',
-                    file_path="data/chinook/Album.csv",
-                    pydantic_create_schema=AlbumCreate,
-                    sqlalchemy_model=Album,
-                )
-            await load_csv(
-                    session,
-                    model_name='track',
-                    file_path="data/chinook/Track.csv",
-                    pydantic_create_schema=TrackCreate,
-                    sqlalchemy_model=Track,
-                )
-            await load_csv(
-                    session,
-                    model_name='employee',
-                    file_path="data/chinook/Employee.csv",
-                    pydantic_create_schema=EmployeeCreate,
-                    sqlalchemy_model=Employee,
-                )
-
-            # await load_customers(session, file_path="data/chinook/Customer.csv")
-            # await load_invoices(session, file_path="data/chinook/Invoice.csv")
-            # await load_invoice_lines(session, file_path="data/chinook/InvoiceLine.csv")
-            # await load_playlists(session, file_path="data/chinook/Playlist.csv")
-            # await load_playlist_tracks(session, file_path="data/chinook/PlaylistTrack.csv")
+            await seed_erp_data(session)
+            #
+            #
+            # await load_csv(
+            #         session,
+            #         model_name='genre',
+            #         file_path="data/chinook/Genre.csv",
+            #         pydantic_create_schema=GenreCreate,
+            #         sqlalchemy_model=Genre,
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='media_type',
+            #         file_path="data/chinook/MediaType.csv",
+            #         pydantic_create_schema=MediaTypeCreate,
+            #         sqlalchemy_model=MediaType,
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='artist',
+            #         file_path="data/chinook/Artist.csv",
+            #         pydantic_create_schema=ArtistCreate,
+            #         sqlalchemy_model=Artist,
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='album',
+            #         file_path="data/chinook/Album.csv",
+            #         pydantic_create_schema=AlbumCreate,
+            #         sqlalchemy_model=Album,
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='track',
+            #         file_path="data/chinook/Track.csv",
+            #         pydantic_create_schema=TrackCreate,
+            #         sqlalchemy_model=Track,
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='employee',
+            #         file_path="data/chinook/Employee.csv",
+            #         pydantic_create_schema=EmployeeCreate,
+            #         sqlalchemy_model=Employee,
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='customer',
+            #         file_path="data/chinook/Customer.csv",
+            #         pydantic_create_schema=CustomerCreate,
+            #         sqlalchemy_model=Customer,
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='invoice',
+            #         file_path="data/chinook/Invoice.csv",
+            #         pydantic_create_schema=InvoiceCreate,
+            #         sqlalchemy_model=Invoice,
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='invoice_line',
+            #         file_path="data/chinook/InvoiceLine.csv",
+            #         pydantic_create_schema=InvoiceLineCreate,
+            #         sqlalchemy_model=InvoiceLine,
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='playlist',
+            #         file_path="data/chinook/Playlist.csv",
+            #         pydantic_create_schema=PlaylistCreate,
+            #         sqlalchemy_model=Playlist,
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='playlist_track',
+            #         file_path="data/chinook/PlaylistTrack.csv",
+            #         pydantic_create_schema=PlaylistTrackCreate,
+            #         sqlalchemy_model=PlaylistTrack,
+            #     )
         else:
             log.info(f"Album (albums) table already has {row_count} rows. Skipping seed.")
+
+
+# ########  ERP (Chinook) DATA SEEDING  ########
+async def seed_erp_data(session: AsyncSession):
+    await load_csv(
+            session,
+            model_name='genre',
+            file_path="data/chinook/Genre.csv",
+            pydantic_create_schema=GenreCreate,
+            sqlalchemy_model=Genre,
+        )
+    await load_csv(
+            session,
+            model_name='media_type',
+            file_path="data/chinook/MediaType.csv",
+            pydantic_create_schema=MediaTypeCreate,
+            sqlalchemy_model=MediaType,
+        )
+    await load_csv(
+            session,
+            model_name='artist',
+            file_path="data/chinook/Artist.csv",
+            pydantic_create_schema=ArtistCreate,
+            sqlalchemy_model=Artist,
+        )
+    await load_csv(
+            session,
+            model_name='album',
+            file_path="data/chinook/Album.csv",
+            pydantic_create_schema=AlbumCreate,
+            sqlalchemy_model=Album,
+        )
+    await load_csv(
+            session,
+            model_name='track',
+            file_path="data/chinook/Track.csv",
+            pydantic_create_schema=TrackCreate,
+            sqlalchemy_model=Track,
+        )
+    await load_csv(
+            session,
+            model_name='employee',
+            file_path="data/chinook/Employee.csv",
+            pydantic_create_schema=EmployeeCreate,
+            sqlalchemy_model=Employee,
+        )
+    await load_csv(
+            session,
+            model_name='customer',
+            file_path="data/chinook/Customer.csv",
+            pydantic_create_schema=CustomerCreate,
+            sqlalchemy_model=Customer,
+        )
+    await load_csv(
+            session,
+            model_name='invoice',
+            file_path="data/chinook/Invoice.csv",
+            pydantic_create_schema=InvoiceCreate,
+            sqlalchemy_model=Invoice,
+        )
+    await load_csv(
+            session,
+            model_name='invoice_line',
+            file_path="data/chinook/InvoiceLine.csv",
+            pydantic_create_schema=InvoiceLineCreate,
+            sqlalchemy_model=InvoiceLine,
+        )
+    await load_csv(
+            session,
+            model_name='playlist',
+            file_path="data/chinook/Playlist.csv",
+            pydantic_create_schema=PlaylistCreate,
+            sqlalchemy_model=Playlist,
+        )
+    await load_csv(
+            session,
+            model_name='playlist_track',
+            file_path="data/chinook/PlaylistTrack.csv",
+            pydantic_create_schema=PlaylistTrackCreate,
+            sqlalchemy_model=PlaylistTrack,
+        )
+
 
 
 # Based on relationships in the well-known Chinook DB schema, we must load the CSV mock data in the

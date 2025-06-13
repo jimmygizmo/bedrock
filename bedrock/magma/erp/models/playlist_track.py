@@ -27,8 +27,8 @@ class PlaylistTrack(Base):
     track = relationship("Track", back_populates="playlists")
 
 
-# SQL CREATE from the original Chinook project for comparison with this Bedrock model
-#
+# --------  REFERENCE  --------
+# NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.
 # CREATE TABLE playlist_track
 # (
 #     playlist_id INT NOT NULL,

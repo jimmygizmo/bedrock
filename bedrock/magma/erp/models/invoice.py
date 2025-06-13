@@ -28,8 +28,8 @@ class Invoice(Base):
     # invoice_lines = relationship("InvoiceLine", back_populates="invoice")
 
 
-# SQL CREATE from the original Chinook project for comparison with this Bedrock model
-#
+# --------  REFERENCE  --------
+# NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.
 # CREATE TABLE invoice
 # (
 #     invoice_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,
