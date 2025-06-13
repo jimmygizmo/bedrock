@@ -15,6 +15,7 @@ from magma.routers import users
 # Routers - ERP
 from magma.erp.routers import genres
 from magma.erp.routers import media_types
+from magma.erp.routers import artists
 # Models for seeding
 from magma.erp.models.genre import Genre
 from magma.erp.models.media_type import MediaType
@@ -81,6 +82,7 @@ app.add_middleware(
 app.include_router(users.router)  # Users
 app.include_router(genres.router)  # Genres
 app.include_router(media_types.router)  # MediaTypes
+app.include_router(artists.router)  # Artists
 
 
 # ########  ROOT API HANDLERS  ########
@@ -116,7 +118,7 @@ async def on_startup():
             await seed_erp_data(session)
             # TODO: Exit maintenance mode here, restoring access to all API endpoints.
         else:
-            log.info(f"Album (albums) table already has {row_count} rows. Skipping seed.")
+            log.info(f"✅ Album (albums) table already has {row_count} rows. Skipping seed.")
 
 
 # ########  ERP (Chinook) DATA SEEDING  ########

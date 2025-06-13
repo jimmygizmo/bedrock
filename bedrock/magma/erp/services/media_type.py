@@ -17,6 +17,8 @@ async def get_media_types_service(session: AsyncSessionDep, skip: int = 0, limit
     statement = select(MediaType).offset(skip).limit(limit)
     result = await session.execute(statement)
     media_types = result.scalars().all()
+    # TODO: In services/artist.py we had to force a similar return value to list() because PyCharm warned about the
+    #   sequence type being returned. Why no similar issue here? Figure that out and maybe services/artist.py benefits.
     return media_types
 
 
