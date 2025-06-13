@@ -28,11 +28,27 @@ from magma.erp.models.album import Album  # Currently only checking Album to det
 # from magma.erp.models.playlist_track import PlaylistTrack
 # from magma.erp.models.track import Track
 
+from magma.seed.seed import load_csv
 from magma.seed.seed import load_genres, load_media_types, load_artists, load_albums, load_tracks, load_employees
 # from magma.seed.seed import load_albums, load_artists, load_customers, load_employees, load_genres, load_invoices
 # from magma.seed.seed import load_invoice_lines, load_media_types, load_playlists, load_playlist_tracks, load_tracks
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
+
+
+from magma.erp.models.genre import Genre
+from magma.erp.models.media_type import MediaType
+from magma.erp.models.artist import Artist
+from magma.erp.models.album import Album
+from magma.erp.models.track import Track
+from magma.erp.models.employee import Employee
+
+from magma.erp.schemas.genre import GenreCreate
+from magma.erp.schemas.media_type import MediaTypeCreate
+from magma.erp.schemas.artist import ArtistCreate
+from magma.erp.schemas.album import AlbumCreate
+from magma.erp.schemas.track import TrackCreate
+from magma.erp.schemas.employee import EmployeeCreate
 
 
 # ########  ENTRYPOINT: Bedrock Platform - FastAPI Application Module:  magma  ########
@@ -103,12 +119,69 @@ async def on_startup():
             log.warn("⚠️  Album (albums) table is empty!!!  Seeding all ERP (Chinook) mock data...")
             log.warn("⚠️️  IMPORTANT!  ⛔  PLEASE WAIT UNTIL DATA LOADING COMPLETES IN A FEW MINUTES  ⛔")
             # IMPORTANT: For foreign key integrity, you must load in depdendency order - children first
-            await load_genres(session, file_path="data/chinook/Genre.csv")
-            await load_media_types(session, file_path="data/chinook/MediaType.csv")
-            await load_artists(session, file_path="data/chinook/Artist.csv")
-            await load_albums(session, file_path="data/chinook/Album.csv")
-            await load_tracks(session, file_path="data/chinook/Track.csv")
-            await load_employees(session, file_path="data/chinook/Employee.csv")
+            await load_csv(
+                    session,
+                    model_name='genre',
+                    file_path="data/chinook/Genre.csv",
+                    pydantic_create_schema=GenreCreate,
+                    sqlalchemy_model=Genre,
+                )
+            # await load_csv(
+            #         session,
+            #         model_name='media_type',
+            #         file_path="data/chinook/MediaType.csv",
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='artist',
+            #         file_path="data/chinook/Artist.csv",
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='album',
+            #         file_path="data/chinook/Album.csv",
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='track',
+            #         file_path="data/chinook/Track.csv",
+            #     )
+            # await load_csv(
+            #         session,
+            #         model_name='employee',
+            #         file_path="data/chinook/Employee.csv",
+            #     )
+
+            # await load_genres(
+            #         session,
+            #         model_name='genre',
+            #         file_path="data/chinook/Genre.csv",
+            #     )
+            # await load_media_types(
+            #         session,
+            #         model_name='media_type',
+            #         file_path="data/chinook/MediaType.csv",
+            #     )
+            # await load_artists(
+            #         session,
+            #         model_name='artist',
+            #         file_path="data/chinook/Artist.csv",
+            #     )
+            # await load_albums(
+            #         session,
+            #         model_name='album',
+            #         file_path="data/chinook/Album.csv",
+            #     )
+            # await load_tracks(
+            #         session,
+            #         model_name='track',
+            #         file_path="data/chinook/Track.csv",
+            #     )
+            # await load_employees(
+            #         session,
+            #         model_name='employee',
+            #         file_path="data/chinook/Employee.csv",
+            #     )
             #
             # await load_customers(session, file_path="data/chinook/Customer.csv")
             # await load_invoices(session, file_path="data/chinook/Invoice.csv")
