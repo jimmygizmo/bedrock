@@ -21,7 +21,7 @@ async def get_genres(session: AsyncSessionDep, skip: int = 0, limit: int = 10) -
 
 
 async def create_genre(session: AsyncSessionDep, genre_in: GenreCreate) -> Genre:
-    genre = Genre(**genre_in.model_dump(by_alias=True))
+    genre = Genre(**genre_in.model_dump(by_alias=False))  # TODO: CLARIFY: False here is a fix. Needs to match field name not alias.
     session.add(genre)
     try:
         await session.commit()

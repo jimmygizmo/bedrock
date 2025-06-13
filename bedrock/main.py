@@ -10,14 +10,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import magma.core.config as cfg
 from magma.core.logger import log
 from magma.core.database import async_engine, Base
-# Routers
+# Routers - Base
 from magma.routers import users
+# Routers - ERP
 from magma.erp.routers import genres
+from magma.erp.routers import media_types
 # Models for seeding
 from magma.erp.models.genre import Genre
 from magma.erp.models.media_type import MediaType
 from magma.erp.models.artist import Artist
-from magma.erp.models.album import Album  # Album is only table checked to decide if the DB needs to be seeded
+from magma.erp.models.album import Album  # Album is the only table checked to decide if the DB needs to be seeded
 from magma.erp.models.track import Track
 from magma.erp.models.employee import Employee
 from magma.erp.models.customer import Customer
@@ -78,6 +80,7 @@ app.add_middleware(
 
 app.include_router(users.router)  # Users
 app.include_router(genres.router)  # Genres
+app.include_router(media_types.router)  # MediaTypes
 
 
 # ########  ROOT API HANDLERS  ########
@@ -108,88 +111,10 @@ async def on_startup():
         if row_count == 0:
             log.warn("⚠️  Album (albums) table is empty!!!  Seeding all ERP (Chinook) mock data...")
             log.warn("⚠️️  IMPORTANT!  ⛔  PLEASE WAIT UNTIL DATA LOADING COMPLETES IN A FEW MINUTES  ⛔")
-            # TODO: Add maintenance mode which disable all of API. Enter maintenance mode here.
+            # TODO: Add maintenance mode which disables access to all endpoints of the API. Enter maintenance mode here.
             # Loading in depdendency order (children first). See table dependency comments at the end of this file.
             await seed_erp_data(session)
-            #
-            #
-            # await load_csv(
-            #         session,
-            #         model_name='genre',
-            #         file_path="data/chinook/Genre.csv",
-            #         pydantic_create_schema=GenreCreate,
-            #         sqlalchemy_model=Genre,
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='media_type',
-            #         file_path="data/chinook/MediaType.csv",
-            #         pydantic_create_schema=MediaTypeCreate,
-            #         sqlalchemy_model=MediaType,
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='artist',
-            #         file_path="data/chinook/Artist.csv",
-            #         pydantic_create_schema=ArtistCreate,
-            #         sqlalchemy_model=Artist,
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='album',
-            #         file_path="data/chinook/Album.csv",
-            #         pydantic_create_schema=AlbumCreate,
-            #         sqlalchemy_model=Album,
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='track',
-            #         file_path="data/chinook/Track.csv",
-            #         pydantic_create_schema=TrackCreate,
-            #         sqlalchemy_model=Track,
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='employee',
-            #         file_path="data/chinook/Employee.csv",
-            #         pydantic_create_schema=EmployeeCreate,
-            #         sqlalchemy_model=Employee,
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='customer',
-            #         file_path="data/chinook/Customer.csv",
-            #         pydantic_create_schema=CustomerCreate,
-            #         sqlalchemy_model=Customer,
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='invoice',
-            #         file_path="data/chinook/Invoice.csv",
-            #         pydantic_create_schema=InvoiceCreate,
-            #         sqlalchemy_model=Invoice,
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='invoice_line',
-            #         file_path="data/chinook/InvoiceLine.csv",
-            #         pydantic_create_schema=InvoiceLineCreate,
-            #         sqlalchemy_model=InvoiceLine,
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='playlist',
-            #         file_path="data/chinook/Playlist.csv",
-            #         pydantic_create_schema=PlaylistCreate,
-            #         sqlalchemy_model=Playlist,
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='playlist_track',
-            #         file_path="data/chinook/PlaylistTrack.csv",
-            #         pydantic_create_schema=PlaylistTrackCreate,
-            #         sqlalchemy_model=PlaylistTrack,
-            #     )
+            # TODO: Exit maintenance mode here, restoring access to all API endpoints.
         else:
             log.info(f"Album (albums) table already has {row_count} rows. Skipping seed.")
 
@@ -275,9 +200,12 @@ async def seed_erp_data(session: AsyncSession):
         )
 
 
-
 # Based on relationships in the well-known Chinook DB schema, we must load the CSV mock data in the
-# correct child-parent order of dependency. This is the order configured above:
+# correct child-parent order of dependency. Without loading in this order, some table rows will start loading which
+# have foreign keys in them which point to related rows which do not exist yet. Our DB has foreign key constraints
+# in place at the time of loading so that would result in errors. If we load in dependency order, you don't have
+# this problem. The seeding order we have configured above is based on the following:
+#
 # 1.   Genre
 # 2.   MediaType
 # 3.   Artist
