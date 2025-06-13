@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator, ConfigDict
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from magma.schemas.shared import AlbumRead
 
@@ -6,16 +6,20 @@ from magma.schemas.shared import AlbumRead
 # ########    PYDANTIC SCHEMA:  artist    ########
 
 
-# -------- Base schema shared across input/output --------
-class ArtistBase(BaseModel):
+# --------  CONFIG  --------
+class ConfigBase(BaseModel):
+    model_config = {
+        "from_attributes": True,
+        "populate_by_name": True,
+    }
+
+
+# --------  BASE  --------
+class ArtistBase(ConfigBase):
     name: Optional[str] = Field(None, alias="Name")
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
 
-
-# -------- Used for incoming POST data (POST: create a new artist with new details) --------
+# --------  CREATE (POST)  --------
 class ArtistCreate(ArtistBase):
 
     # TODO: Enable this after ensuring our seed data is free of non-alpha charaters in this field.
@@ -27,31 +31,27 @@ class ArtistCreate(ArtistBase):
     #     return v
 
     # Many more validation methods will be going in a *Create class especially in other schemas with more fields.
-    pass
+
+    model_config = {
+        "extra": "forbid",
+    }
 
 
-# -------- Used for incoming POST data for *UPDATE* (PATCH/PUT: update album details for an existing album) --------
-class ArtistUpdate(BaseModel):
+# --------  UPDATE (PUT)  --------
+class ArtistUpdate(ConfigBase):
     name: Optional[str] = None
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
 
-
-# -------- Used for response serialization (GET: /artists/1) --------
-class ArtistRead(BaseModel):
+# --------  READ (GET)  --------
+class ArtistRead(ConfigBase):
     artist_id: int
     name: str
     albums: List[AlbumRead] = []
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
 
 
-# SQL CREATE from the original Chinook project for comparison with this Bedrock schema
-#
+# --------  REFERENCE  --------
+# NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.
 # CREATE TABLE artist
 # (
 #     artist_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,

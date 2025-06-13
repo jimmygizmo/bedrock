@@ -11,9 +11,10 @@ from typing import Optional, List, TYPE_CHECKING
 
 # --------  CONFIG  --------
 class ConfigBase(BaseModel):
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+    model_config = {
+        "from_attributes": True,
+        "populate_by_name": True,
+    }
 
 
 # --------  BASE  --------
@@ -57,24 +58,6 @@ class TrackRead(ConfigBase):
     milliseconds: int
     bytes: Optional[int]
     unit_price: float
-
-
-# IN-PROGRESS WORK:
-# FIX ATTEMPT FOR CIRCULAR IMPORT - RETAINED FOR NOW - DOES ALSO SHOW INHERITANCE FROM TrackBase
-# -------- Used for response serialization (GET: /tracks/1) --------
-# class TrackRead(TrackBase):  # "flat read" - no joins
-#     track_id: int
-#
-#     album: Optional["AlbumRead"] = None  # Forward reference as a string
-#
-#     # class Config:
-#     #     from_attributes = True
-#     #     populate_by_name = True
-#
-#
-# # Do NOT import AlbumRead at the top!
-# from magma.schemas.album import AlbumRead
-# TrackRead.model_rebuild()
 
 
 # IN-PROGRESS WORK:

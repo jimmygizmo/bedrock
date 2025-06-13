@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field, field_validator, ConfigDict
-from typing import Optional, List, TYPE_CHECKING
+from pydantic import BaseModel, Field
+from typing import Optional
 # from magma.schemas.genre import GenreRead
 # from magma.schemas.media_type import MediaTypeRead
 # from magma.schemas.invoice_line import InvoiceLineRead
@@ -9,8 +9,16 @@ from typing import Optional, List, TYPE_CHECKING
 # ########    PYDANTIC SCHEMA:  track    ########
 
 
-# -------- Base schema shared across input/output --------
-class TrackBase(BaseModel):
+# --------  CONFIG  --------
+class ConfigBase(BaseModel):
+    model_config = {
+        "from_attributes": True,
+        "populate_by_name": True,
+    }
+
+
+# --------  BASE  --------
+class TrackBase(ConfigBase):
     name: str = Field(..., alias="Name")
     album_id: Optional[int] = Field(None, alias="AlbumId")
     media_type_id: int = Field(..., alias="MediaTypeId")
@@ -20,15 +28,11 @@ class TrackBase(BaseModel):
     bytes: Optional[int] = Field(None, alias="Bytes")
     unit_price: float = Field(..., alias="UnitPrice")
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
 
-
-# -------- Used for incoming POST data (POST: create a new track with new details) --------
+# --------  CREATE (POST)  --------
 class TrackCreate(TrackBase):
 
-    # TODO: Enable this after ensuring our seed data is free of empty/no-value in this field.
+    # TODO: Enable this after ensuring our seed data is free of empty/no-value in this field. AND update the code
     # Example validator placeholder
     # @classmethod
     # @field_validator('name')
@@ -37,7 +41,7 @@ class TrackCreate(TrackBase):
     #         raise ValueError("Track name cannot be empty.")
     #     return v
 
-    # TODO: Enable this after ensuring our seed data is free of non-alpha charaters in this field.
+    # TODO: Enable this after ensuring our seed data is free of non-alpha charaters in this field. AND update the code
     # @classmethod
     # @field_validator('name')
     # def name_alphanumeric(cls, v: Optional[str]) -> Optional[str]:
@@ -46,11 +50,14 @@ class TrackCreate(TrackBase):
     #     return v
 
     # Many more validation methods will be going in a *Create class especially in other schemas with more fields.
-    pass
+
+    model_config = {
+        "extra": "forbid",
+    }
 
 
-# -------- Used for incoming POST data for *UPDATE* (PATCH/PUT: update track details for an existing track) --------
-class TrackUpdate(BaseModel):
+# --------  UPDATE (PUT)  --------
+class TrackUpdate(ConfigBase):
     name: Optional[str] = None
     album_id: Optional[int] = None
     media_type_id: Optional[int] = None
@@ -60,13 +67,9 @@ class TrackUpdate(BaseModel):
     bytes: Optional[int] = None
     unit_price: Optional[float] = None
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
 
-
-# -------- Used for response serialization (GET: /tracks/1) --------
-class TrackRead(BaseModel):  # "flat read" - no joins
+# --------  READ (GET)  --------
+class TrackRead(ConfigBase):
     track_id: int
     name: str
     album_id: Optional[int]
@@ -77,32 +80,10 @@ class TrackRead(BaseModel):  # "flat read" - no joins
     bytes: Optional[int]
     unit_price: float
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
 
-
-# FIX ATTEMPT FOR CIRCULAR IMPORT - RETAINED FOR NOW - DOES ALSO SHOW INHERITANCE FROM TrackBase
-# -------- Used for response serialization (GET: /tracks/1) --------
-# class TrackRead(TrackBase):  # "flat read" - no joins
-#     track_id: int
-#
-#     album: Optional["AlbumRead"] = None  # Forward reference as a string
-#
-#     # class Config:
-#     #     from_attributes = True
-#     #     populate_by_name = True
-#
-#
-# # Do NOT import AlbumRead at the top!
-# from magma.schemas.album import AlbumRead
-# TrackRead.model_rebuild()
-
-
-# -------- Used for response serialization (GET: /albums/1) --------
 # EXAMPLE OF A JOIN SCHEMA
 # Uses imported schemas: AlbumRead, MediaTypeRead, GenreRead, InvoiceLineRead, PlayListTrackRead
-# class TrackDeepRead(BaseModel):  # "deep read" - includes relationships
+# class TrackDeepRead(ConfigBase):  # "deep read" - includes relationships
 #     track_id: int
 #     name: str
 #     album_id: Optional[int]
@@ -118,14 +99,10 @@ class TrackRead(BaseModel):  # "flat read" - no joins
 #     genre: Optional[GenreRead] = None
 #     invoice_lines: Optional[List[InvoiceLineRead]] = []
 #     playlists: Optional[List[PlaylistTrackRead]] = []
-#
-#     class Config:
-#         from_attributes = True
-#         populate_by_name = True
 
 
-# SQL CREATE from the original Chinook project for comparison with this Bedrock schema
-#
+# --------  REFERENCE  --------
+# NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.
 # CREATE TABLE track
 # (
 #     track_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,

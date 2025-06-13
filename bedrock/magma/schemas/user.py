@@ -1,23 +1,32 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator, ConfigDict
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing import Optional
 
 
 # ########    PYDANTIC SCHEMA:  user    ########
 
 
-# -------- Base schema shared across input/output --------
+# --------  CONFIG  --------
+class ConfigBase(BaseModel):
+    model_config = {
+        "from_attributes": True,
+        "populate_by_name": True,
+    }
+
+# --------  BASE  --------
 # TODO: Probably make email: str = Field(..., min_length=6, max_length=60)    Research email sizes and tune 60 max.
-class UserBase(BaseModel):
+class UserBase(ConfigBase):
     username: str = Field(..., min_length=3, max_length=50)
     email: EmailStr
     full_name: Optional[str] = None
 
 
-# -------- Used for incoming POST data (example: new user registration) --------
+# --------  CREATE (POST)  --------
 class UserCreate(UserBase):
     password: str = Field(..., min_length=8)  # Not in UserBase. Including it in UserRead via UserBase is insecure.
 
-    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+    model_config = {
+        "extra": "forbid",
+    }
 
     @classmethod
     @field_validator('username')
@@ -56,11 +65,15 @@ class UserCreate(UserBase):
         return v
 
 
-# -------- Used for response serialization (example: API GET /users/1) --------
-class UserRead(UserBase):
+# --------  UPDATE (PUT)  --------
+# TODO
+
+
+# --------  READ (GET)  --------
+class UserRead(ConfigBase):
     id: int
 
-    class Config:
-        # orm_mode = True  # Renamed to from_attributes - below:
-        from_attributes = True
+
+# --------  REFERENCE  --------
+# Only Chinook ERP models/schemas have a table SQL reference. Others are original to Bedrock and defined in the models.
 

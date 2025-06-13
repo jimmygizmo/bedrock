@@ -1,5 +1,5 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator, ConfigDict
-from typing import Optional, List
+from pydantic import BaseModel, Field, field_validator
+from typing import Optional
 from magma.validators.shared import validate_alnum_with_spaces
 
 
@@ -8,9 +8,10 @@ from magma.validators.shared import validate_alnum_with_spaces
 
 # --------  CONFIG  --------
 class ConfigBase(BaseModel):
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+    model_config = {
+        "from_attributes": True,
+        "populate_by_name": True,
+    }
 
 
 # --------  BASE  --------

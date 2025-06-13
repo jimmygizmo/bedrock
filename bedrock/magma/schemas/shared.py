@@ -2,27 +2,30 @@ from pydantic import BaseModel, Field
 from typing import List
 
 
-class AlbumRead(BaseModel):
+# ########    PYDANTIC SCHEMA:  shared    ########
+
+
+# --------  CONFIG  --------
+class ConfigBase(BaseModel):
+    model_config = {
+        "from_attributes": True,
+        "populate_by_name": True,
+    }
+
+
+class AlbumRead(ConfigBase):
     album_id: int = Field(alias="AlbumId")
     title: str = Field(alias="Title")
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
 
-
-class ArtistRead(BaseModel):
+class ArtistRead(ConfigBase):
     artist_id: int = Field(alias="ArtistId")
     name: str
     albums: List[AlbumRead] = []
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
 
-
-
-# SQL CREATE from the original Chinook project for comparison with these Bedrock schemas
+# --------  REFERENCE  --------
+# NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.
 
 # CREATE TABLE album
 # (

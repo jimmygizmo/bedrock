@@ -1,54 +1,33 @@
 #! /usr/bin/env python
 
+# Platform
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import select, func  # Used to detect the need to seed the database
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
+# Magma application
 import magma.core.config as cfg
 from magma.core.logger import log
 from magma.core.database import async_engine, Base
+# Routers
 from magma.routers import users
 from magma.erp.routers import genres
-
-# FOR SEEDING:
-from sqlalchemy import select, func
-
-# **** SOLN67 #### This is related to special code inside /magma/erp/models/__init__.py
-# This works with the __init__ to make sure all models are defined/imported before string-based relations made.
-from magma.erp import models
-
-from magma.erp.models.album import Album  # Currently only checking Album to detect need for data seeding entire DB.
-# Models are only needed in main.py for the 'select' to detect the need for seeding in any perticular table.
-# from magma.erp.models.artist import Artist
-# from magma.erp.models.employee import Employee
-# from magma.erp.models.customer import Customer
-# from magma.erp.models.genre import Genre
-# from magma.erp.models.invoice import Invoice
-# from magma.erp.models.invoice_line import InvoiceLine
-# from magma.erp.models.media_type import MediaType
-# from magma.erp.models.playlist import Playlist
-# from magma.erp.models.playlist_track import PlaylistTrack
-# from magma.erp.models.track import Track
-
-from magma.seed.seed import load_csv
-from magma.seed.seed import load_genres, load_media_types, load_artists, load_albums, load_tracks, load_employees
-# from magma.seed.seed import load_albums, load_artists, load_customers, load_employees, load_genres, load_invoices
-# from magma.seed.seed import load_invoice_lines, load_media_types, load_playlists, load_playlist_tracks, load_tracks
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.asyncio import AsyncSession
-
-
+# Models for seeding
 from magma.erp.models.genre import Genre
 from magma.erp.models.media_type import MediaType
 from magma.erp.models.artist import Artist
-from magma.erp.models.album import Album
+from magma.erp.models.album import Album  # Album is only table checked to decide if the DB needs to be seeded
 from magma.erp.models.track import Track
 from magma.erp.models.employee import Employee
-
+# Schemas for seeding
 from magma.erp.schemas.genre import GenreCreate
 from magma.erp.schemas.media_type import MediaTypeCreate
 from magma.erp.schemas.artist import ArtistCreate
 from magma.erp.schemas.album import AlbumCreate
 from magma.erp.schemas.track import TrackCreate
 from magma.erp.schemas.employee import EmployeeCreate
+from magma.seed.seed import load_csv
 
 
 # ########  ENTRYPOINT: Bedrock Platform - FastAPI Application Module:  magma  ########
@@ -113,12 +92,12 @@ async def on_startup():
 
     # Automatic data seeding
     async with AsyncSessionLocal() as session:
-        result = await session.execute(select(func.count()).select_from(models.album.Album))
+        result = await session.execute(select(func.count()).select_from(Album))
         row_count = result.scalar()
         if row_count == 0:
             log.warn("⚠️  Album (albums) table is empty!!!  Seeding all ERP (Chinook) mock data...")
             log.warn("⚠️️  IMPORTANT!  ⛔  PLEASE WAIT UNTIL DATA LOADING COMPLETES IN A FEW MINUTES  ⛔")
-            # IMPORTANT: For foreign key integrity, you must load in depdendency order - children first
+            # Loading in depdendency order (children first). See table dependency comments at the end of this file.
             await load_csv(
                     session,
                     model_name='genre',
@@ -126,63 +105,42 @@ async def on_startup():
                     pydantic_create_schema=GenreCreate,
                     sqlalchemy_model=Genre,
                 )
-            # await load_csv(
-            #         session,
-            #         model_name='media_type',
-            #         file_path="data/chinook/MediaType.csv",
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='artist',
-            #         file_path="data/chinook/Artist.csv",
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='album',
-            #         file_path="data/chinook/Album.csv",
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='track',
-            #         file_path="data/chinook/Track.csv",
-            #     )
-            # await load_csv(
-            #         session,
-            #         model_name='employee',
-            #         file_path="data/chinook/Employee.csv",
-            #     )
+            await load_csv(
+                    session,
+                    model_name='media_type',
+                    file_path="data/chinook/MediaType.csv",
+                    pydantic_create_schema=MediaTypeCreate,
+                    sqlalchemy_model=MediaType,
+                )
+            await load_csv(
+                    session,
+                    model_name='artist',
+                    file_path="data/chinook/Artist.csv",
+                    pydantic_create_schema=ArtistCreate,
+                    sqlalchemy_model=Artist,
+                )
+            await load_csv(
+                    session,
+                    model_name='album',
+                    file_path="data/chinook/Album.csv",
+                    pydantic_create_schema=AlbumCreate,
+                    sqlalchemy_model=Album,
+                )
+            await load_csv(
+                    session,
+                    model_name='track',
+                    file_path="data/chinook/Track.csv",
+                    pydantic_create_schema=TrackCreate,
+                    sqlalchemy_model=Track,
+                )
+            await load_csv(
+                    session,
+                    model_name='employee',
+                    file_path="data/chinook/Employee.csv",
+                    pydantic_create_schema=EmployeeCreate,
+                    sqlalchemy_model=Employee,
+                )
 
-            # await load_genres(
-            #         session,
-            #         model_name='genre',
-            #         file_path="data/chinook/Genre.csv",
-            #     )
-            # await load_media_types(
-            #         session,
-            #         model_name='media_type',
-            #         file_path="data/chinook/MediaType.csv",
-            #     )
-            # await load_artists(
-            #         session,
-            #         model_name='artist',
-            #         file_path="data/chinook/Artist.csv",
-            #     )
-            # await load_albums(
-            #         session,
-            #         model_name='album',
-            #         file_path="data/chinook/Album.csv",
-            #     )
-            # await load_tracks(
-            #         session,
-            #         model_name='track',
-            #         file_path="data/chinook/Track.csv",
-            #     )
-            # await load_employees(
-            #         session,
-            #         model_name='employee',
-            #         file_path="data/chinook/Employee.csv",
-            #     )
-            #
             # await load_customers(session, file_path="data/chinook/Customer.csv")
             # await load_invoices(session, file_path="data/chinook/Invoice.csv")
             # await load_invoice_lines(session, file_path="data/chinook/InvoiceLine.csv")

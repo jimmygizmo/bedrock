@@ -19,7 +19,8 @@ from typing import Optional
 def validate_alnum_with_spaces(v: Optional[str], field_name: str) -> Optional[str]:
     if v is not None:
         v = v.strip()  # For 'only whitespace' and 'whitespace on ends'. 2 unwanted edge cases stripped/deleted here.
-        if not v.replace(" ", "").isalnum():  # Deleting spaces pre-check here --> allows spaces.
+        v_check = v.replace(" ", "")  # Remove space from check to allow spaces
+        if not v_check.isalnum():
             raise ValueError(f"Field '{field_name}' must be alphanumeric (spaces allowed)")
     return v
 
