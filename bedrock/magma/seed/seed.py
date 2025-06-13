@@ -8,12 +8,21 @@ from magma.erp.models.media_type import MediaType
 from magma.erp.models.artist import Artist
 from magma.erp.models.album import Album
 from magma.erp.models.track import Track
+from magma.erp.models.employee import Employee
 from magma.erp.schemas.genre import GenreCreate
 from magma.erp.schemas.media_type import MediaTypeCreate
 from magma.erp.schemas.artist import ArtistCreate
 from magma.erp.schemas.album import AlbumCreate
 from magma.erp.schemas.track import TrackCreate
+from magma.erp.schemas.employee import EmployeeCreate
 import csv
+
+
+def normalized_row(row: dict) -> dict:
+    """
+    Convert empty strings in a row dict to None.
+    """
+    return {k: (v if v != '' else None) for k, v in row.items()}
 
 
 async def load_genres(session: AsyncSession, file_path: str):
@@ -194,4 +203,44 @@ async def load_tracks(session: AsyncSession, file_path: str):
 
         await session.commit()
         log.info(f"✅ {count} tracks loaded successfully. {errors} row(s) had issues.")
+
+
+async def load_employees(session: AsyncSession, file_path: str):
+    """
+    Load employee data from a CSV file into the database with Pydantic validation.
+    """
+    log.info(f"🔄 Loading employees from {file_path}")
+
+    path = Path(file_path)
+    if not path.exists():
+        log.error(f"❌ File not found: {file_path}")
+        return
+
+    with path.open("r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        count = 0
+        errors = 0
+
+        for row_num, row in enumerate(reader, start=1):
+            try:
+                norm_row = normalized_row(row)
+                # Validate input row using Pydantic
+                ################ DEBUG
+                log.debug(norm_row)
+                ################ DEBUG
+                validated = EmployeeCreate(**norm_row)
+
+                # Convert validated object to SQLAlchemy model
+                employee = Employee(**validated.model_dump())
+                session.add(employee)
+                count += 1
+            except ValidationError as ve:
+                errors += 1
+                log.warning(f"⚠️ Validation error on row {row_num}: {ve.errors()}")
+            except Exception as e:
+                errors += 1
+                log.error(f"❌ Unexpected error on row {row_num}: {e}")
+
+        await session.commit()
+        log.info(f"✅ {count} employees loaded successfully. {errors} row(s) had issues.")
 

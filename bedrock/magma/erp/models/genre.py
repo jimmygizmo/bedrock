@@ -18,8 +18,7 @@ class Genre(Base):
 
 
 # --------  REFERENCE  --------
-# SQL CREATE from the original Chinook project
-#
+# NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.
 # CREATE TABLE genre
 # (
 #     genre_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,

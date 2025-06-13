@@ -33,8 +33,9 @@ class Employee(Base):
     direct_reports = relationship("Employee", backref="manager", remote_side=[employee_id])
     # TODO: remote_side above is giving a type warning in PyCharm. Not something you can import, apparently.
 
-# SQL CREATE from the original Chinook project for comparison with this Bedrock model
-#
+
+# --------  REFERENCE  --------
+# NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.
 # CREATE TABLE employee
 # (
 #     employee_id INT NOT NULL GENERATED ALWAYS AS IDENTITY,

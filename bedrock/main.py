@@ -18,8 +18,8 @@ from magma.erp import models
 from magma.erp.models.album import Album  # Currently only checking Album to detect need for data seeding entire DB.
 # Models are only needed in main.py for the 'select' to detect the need for seeding in any perticular table.
 # from magma.erp.models.artist import Artist
-# from magma.erp.models.customer import Customer
 # from magma.erp.models.employee import Employee
+# from magma.erp.models.customer import Customer
 # from magma.erp.models.genre import Genre
 # from magma.erp.models.invoice import Invoice
 # from magma.erp.models.invoice_line import InvoiceLine
@@ -28,14 +28,14 @@ from magma.erp.models.album import Album  # Currently only checking Album to det
 # from magma.erp.models.playlist_track import PlaylistTrack
 # from magma.erp.models.track import Track
 
-from magma.seed.seed import load_genres, load_media_types, load_artists, load_albums, load_tracks
+from magma.seed.seed import load_genres, load_media_types, load_artists, load_albums, load_tracks, load_employees
 # from magma.seed.seed import load_albums, load_artists, load_customers, load_employees, load_genres, load_invoices
 # from magma.seed.seed import load_invoice_lines, load_media_types, load_playlists, load_playlist_tracks, load_tracks
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-# ########  ENTRYPOINT: Bedrock Platform - FastAPI Application:  magma  ########
+# ########  ENTRYPOINT: Bedrock Platform - FastAPI Application Module:  magma  ########
 
 
 log.info("🔥🔥🔥  BEDROCK MAGMA STARTING  🔥🔥🔥")
@@ -44,7 +44,7 @@ app = None  # Ensures global scope visibility for guvicorn
 
 if cfg.stack_env == 'DEVELOPMENT':
     app = FastAPI()
-    log.info(f"⚠️  Swagger/OpenAPI/ReDoc enabled.  Danger!!!  ⛔  DEVELOPMENT  ⛔  - "
+    log.info(f"⚠️  Swagger/OpenAPI/ReDoc enabled.  Danger!!!  ⛔ DEVELOPMENT ⛔  - "
           f"cfg.stack_env: {cfg.stack_env}")
 else:
     app = FastAPI(openapi_url=None, docs_url=None, redoc_url=None)
@@ -108,9 +108,9 @@ async def on_startup():
             await load_artists(session, file_path="data/chinook/Artist.csv")
             await load_albums(session, file_path="data/chinook/Album.csv")
             await load_tracks(session, file_path="data/chinook/Track.csv")
+            await load_employees(session, file_path="data/chinook/Employee.csv")
             #
             # await load_customers(session, file_path="data/chinook/Customer.csv")
-            # await load_employees(session, file_path="data/chinook/Employee.csv")
             # await load_invoices(session, file_path="data/chinook/Invoice.csv")
             # await load_invoice_lines(session, file_path="data/chinook/InvoiceLine.csv")
             # await load_playlists(session, file_path="data/chinook/Playlist.csv")
