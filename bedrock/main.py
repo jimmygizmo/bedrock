@@ -18,6 +18,8 @@ from magma.erp.routers import media_types
 from magma.erp.routers import artists
 from magma.erp.routers import albums
 from magma.erp.routers import tracks
+from magma.erp.routers import employees
+from magma.erp.routers import customers
 # Models for seeding
 from magma.erp.models.genre import Genre
 from magma.erp.models.media_type import MediaType
@@ -81,12 +83,16 @@ app.add_middleware(
 
 # ########  ROUTERS  ########
 
+# MAIN ROUTERS
 app.include_router(users.router)  # Users
+# ERP ROUTERS
 app.include_router(genres.router)  # Genres
 app.include_router(media_types.router)  # MediaTypes
 app.include_router(artists.router)  # Artists
 app.include_router(albums.router)  # Albums
 app.include_router(tracks.router)  # Tracks
+app.include_router(employees.router)  # Employees
+app.include_router(customers.router)  # Customers
 
 
 # ########  ROOT API HANDLERS  ########

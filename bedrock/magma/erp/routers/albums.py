@@ -13,13 +13,13 @@ router = APIRouter(prefix="/albums", tags=["albums"])
 
 @router.get("/", response_model=list[AlbumRead])
 async def get_albums(session: AsyncSessionDep, skip: int = 0, limit: int = 100):
-    log.info(f"🧊  ----> /albums/    GET ALL (paged)")
+    log.info(f"📖 >>>>    /albums/")
     return await get_albums_service(session, skip, limit)
 
 
 @router.get("/{album_id}", response_model=AlbumRead)
 async def get_album(session: AsyncSessionDep, album_id: int):
-    log.info(f"🧊  ----> /albums/{album_id}    GET SINGLE")
+    log.info(f"👁️ --->    /albums/{album_id}")
     album = await get_album_service(session, album_id)
     if not album:
         raise HTTPException(status_code=404, detail="Album not found")
@@ -28,13 +28,13 @@ async def get_album(session: AsyncSessionDep, album_id: int):
 
 @router.post("/", response_model=AlbumRead, status_code=201)
 async def create_album(session: AsyncSessionDep, album_in: AlbumCreate):
-    log.info(f"🧊  ----> /albums/    POST NEW")
+    log.info(f"☘️ ++++    /albums/")
     return await create_album_service(session, album_in)
 
 
 @router.put("/{album_id}", response_model=AlbumRead)
 async def update_album(session: AsyncSessionDep, album_id: int, album_in: AlbumUpdate):
-    log.info(f"🧊  ----> /albums/{album_id}    PUT UPDATE")
+    log.info(f"✏️ ====    /albums/{album_id}")
     album = await update_album_service(session, album_id, album_in)
     if not album:
         raise HTTPException(status_code=404, detail="Album not found")
@@ -43,7 +43,7 @@ async def update_album(session: AsyncSessionDep, album_id: int, album_in: AlbumU
 
 @router.delete("/{album_id}", status_code=204)
 async def delete_album(session: AsyncSessionDep, album_id: int):
-    log.info(f"🧊  ----> /albums/{album_id}    DELETE")
+    log.info(f"️💥 ----    /albums/{album_id}")
     success = await delete_album_service(session, album_id)
     if not success:
         raise HTTPException(status_code=404, detail="Album not found")

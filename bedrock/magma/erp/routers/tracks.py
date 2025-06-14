@@ -13,8 +13,8 @@ router = APIRouter(prefix="/tracks", tags=["tracks"])
 
 @router.get("/", response_model=list[TrackRead])
 async def get_tracks(session: AsyncSessionDep, skip: int = 0, limit: int = 100):
-    # log.info(f"📖>>>>>>>>    /tracks/    GET ALL (paged)")
-    log.info(f"[[>>>>>>>>]]    /tracks/    GET ALL (paged)")  # TODO: ASCII vs. EMOJI ICON CONFIG OPTION COMING
+    # log.info(f"📖 >>>>    /tracks/")
+    log.info(f"[[>>>>]]    /tracks/")  # TODO: ASCII vs. EMOJI ICON CONFIG OPTION COMING
     return await get_tracks_service(session, skip, limit)
 
 
@@ -36,8 +36,8 @@ async def get_tracks(session: AsyncSessionDep, skip: int = 0, limit: int = 100):
 
 @router.get("/{track_id}", response_model=TrackRead)
 async def get_track(session: AsyncSessionDep, track_id: int):
-    # log.info(f"📖>>>>    /tracks/{track_id}    GET SINGLE")
-    log.info(f"[[>>>>]]    /tracks/{track_id}    GET SINGLE")  # TODO: ASCII vs. EMOJI ICON CONFIG OPTION COMING
+    # log.info(f"👁️ --->    /tracks/{track_id}")
+    log.info(f"[[--->]]    /tracks/{track_id}")  # TODO: ASCII vs. EMOJI ICON CONFIG OPTION COMING
     track = await get_track_service(session, track_id)
     if not track:
         raise HTTPException(status_code=404, detail="Track not found")
@@ -46,15 +46,15 @@ async def get_track(session: AsyncSessionDep, track_id: int):
 
 @router.post("/", response_model=TrackRead, status_code=201)
 async def create_track(session: AsyncSessionDep, track_in: TrackCreate):
-    # log.info(f"☘️++++    /tracks/    POST NEW")
-    log.info(f"[[++++]]    /tracks/    POST NEW")  # TODO: ASCII vs. EMOJI ICON CONFIG OPTION COMING
+    # log.info(f"☘️ ++++    /tracks/")
+    log.info(f"[[++++]]    /tracks/")  # TODO: ASCII vs. EMOJI ICON CONFIG OPTION COMING
     return await create_track_service(session, track_in)
 
 
 @router.put("/{track_id}", response_model=TrackRead)
 async def update_track(session: AsyncSessionDep, track_id: int, track_in: TrackUpdate):
-    # log.info(f"✏️====    /tracks/{track_id}    PUT UPDATE")
-    log.info(f"[[====]]    /tracks/{track_id}    PUT UPDATE")  # TODO: ASCII vs. EMOJI ICON CONFIG OPTION COMING
+    # log.info(f"✏️ ====    /tracks/{track_id}")
+    log.info(f"[[====]]    /tracks/{track_id}")  # TODO: ASCII vs. EMOJI ICON CONFIG OPTION COMING
     track = await update_track_service(session, track_id, track_in)
     if not track:
         raise HTTPException(status_code=404, detail="Track not found")
@@ -63,8 +63,8 @@ async def update_track(session: AsyncSessionDep, track_id: int, track_in: TrackU
 
 @router.delete("/{track_id}", status_code=204)
 async def delete_track(session: AsyncSessionDep, track_id: int):
-    log.info(f"🗑️----    /tracks/{track_id}    DELETE")  # TODO: ASCII vs. EMOJI ICON CONFIG OPTION COMING
-    log.info(f"[[----]]    /tracks/{track_id}    DELETE")
+    log.info(f"💥 ----    /tracks/{track_id}")  # TODO: ASCII vs. EMOJI ICON CONFIG OPTION COMING
+    log.info(f"[[----]]    /tracks/{track_id}")
     success = await delete_track_service(session, track_id)
     if not success:
         raise HTTPException(status_code=404, detail="Track not found")
