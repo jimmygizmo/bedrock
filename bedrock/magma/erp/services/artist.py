@@ -35,6 +35,7 @@ async def get_artists_service(session: AsyncSession, skip: int = 0, limit: int =
     return list(artists)
 
 
+# TODO: CHECK FOR NEEDING OUR FIXES
 async def create_artist_service(session: AsyncSession, artist_in: ArtistCreate) -> Artist:
     artist = Artist(**artist_in.model_dump())
     session.add(artist)
@@ -43,6 +44,7 @@ async def create_artist_service(session: AsyncSession, artist_in: ArtistCreate) 
     return artist
 
 
+# TODO: CHECK FOR NEEDING OUR FIXES
 async def update_artist_service(session: AsyncSession, artist_id: int, artist_in: ArtistUpdate) -> Artist | None:
     artist = await get_artist_service(session, artist_id)
     if not artist:

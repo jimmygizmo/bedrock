@@ -22,6 +22,7 @@ async def get_media_types_service(session: AsyncSessionDep, skip: int = 0, limit
     return media_types
 
 
+# TODO: CHECK FOR NEEDING OUR FIXES
 async def create_media_type_service(session: AsyncSessionDep, media_type_in: MediaTypeCreate) -> MediaType:
     media_type = MediaType(**media_type_in.model_dump())
     session.add(media_type)
@@ -34,6 +35,7 @@ async def create_media_type_service(session: AsyncSessionDep, media_type_in: Med
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
+# TODO: CHECK FOR NEEDING OUR FIXES
 async def update_media_type_service(session: AsyncSessionDep, media_type_id: int, media_type_in: MediaTypeUpdate) -> Optional[MediaType]:
     statement = select(MediaType).where(MediaType.media_type_id == media_type_id)
     result = await session.execute(statement)

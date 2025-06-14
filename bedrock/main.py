@@ -21,6 +21,7 @@ from magma.erp.routers import tracks
 from magma.erp.routers import employees
 from magma.erp.routers import customers
 from magma.erp.routers import invoices
+from magma.erp.routers import invoice_lines
 # Models for seeding
 from magma.erp.models.genre import Genre
 from magma.erp.models.media_type import MediaType
@@ -95,6 +96,7 @@ app.include_router(tracks.router)  # Tracks
 app.include_router(employees.router)  # Employees
 app.include_router(customers.router)  # Customers
 app.include_router(invoices.router)  # Invoices
+app.include_router(invoice_lines.router)  # InvoiceLines
 
 
 # ########  ROOT API HANDLERS  ########

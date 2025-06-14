@@ -40,6 +40,7 @@ async def get_albums_service(session: AsyncSession, skip: int = 0, limit: int = 
     return list(albums)
 
 
+# TODO: CHECK FOR NEEDING OUR FIXES
 async def create_album_service(session: AsyncSession, album_in: AlbumCreate) -> Album:
     album = Album(**album_in.model_dump())
     session.add(album)
@@ -48,6 +49,7 @@ async def create_album_service(session: AsyncSession, album_in: AlbumCreate) -> 
     return album
 
 
+# TODO: CHECK FOR NEEDING OUR FIXES
 async def update_album_service(session: AsyncSession, album_id: int, album_in: AlbumUpdate) -> Album | None:
     album = await get_album_service(session, album_id)
     if not album:

@@ -20,6 +20,7 @@ async def get_genres(session: AsyncSessionDep, skip: int = 0, limit: int = 10) -
     return genres
 
 
+# TODO: CHECK FOR NEEDING OUR FIXES
 async def create_genre(session: AsyncSessionDep, genre_in: GenreCreate) -> Genre:
     genre = Genre(**genre_in.model_dump())
     session.add(genre)
@@ -35,6 +36,7 @@ async def create_genre(session: AsyncSessionDep, genre_in: GenreCreate) -> Genre
     #     raise HTTPException(status_code=400, detail="User with this email already exists.")
 
 
+# TODO: CHECK FOR NEEDING OUR FIXES
 async def update_genre(session: AsyncSessionDep, genre_id: int, genre_in: GenreUpdate) -> Optional[Genre]:
     statement = select(Genre).where(Genre.genre_id == genre_id)
     result = await session.execute(statement)

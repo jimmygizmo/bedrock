@@ -66,6 +66,7 @@ async def create_invoice_service(session: AsyncSession, invoice_in: InvoiceCreat
     return invoice_with_rels
 
 
+# TODO: CHECK FOR NEEDING OUR FIXES
 async def update_invoice_service(session: AsyncSession, invoice_id: int, invoice_in: InvoiceUpdate) -> Invoice | None:
     invoice = await get_invoice_service(session, invoice_id)
     if not invoice:

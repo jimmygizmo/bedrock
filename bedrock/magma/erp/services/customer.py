@@ -38,20 +38,14 @@ async def get_customers_service(session: AsyncSession, skip: int = 0, limit: int
     return list(customers)
 
 
-# TODO: THIS DID NOT FAIL A TEST BUT I KNOW IT WILL. FIX IS BELOW. USE selectinload HERE TOO:
-# async def create_customer_service(session: AsyncSession, customer_in: CustomerCreate) -> Customer:
-#     customer = Customer(**customer_in.model_dump())
-#     session.add(customer)
-#     await session.commit()
-#     await session.refresh(customer)
-#     return customer
+# TODO: REFRESH SEEMS ABSOLUTELY UNAVOIDABLE. THIS IS THE PATTERN TO USE. TESTED MANY MANY OTHERS.
+#   QUESTION IS, What is different about others that seem to work without refresh? Probably a difference in relations.
 async def create_customer_service(session: AsyncSession, customer_in: CustomerCreate) -> Customer:
     customer = Customer(**customer_in.model_dump())
     session.add(customer)
     await session.commit()
     await session.refresh(customer)
 
-    # Re-select the customer with relationships loaded
     statement = (
         select(Customer)
         .options(
@@ -66,6 +60,7 @@ async def create_customer_service(session: AsyncSession, customer_in: CustomerCr
     return customer_with_rels
 
 
+# TODO: Check ALL UPDATEs and apply the "selectinload" fix.
 async def update_customer_service(session: AsyncSession, customer_id: int, customer_in: CustomerUpdate) -> Customer | None:
     customer = await get_customer_service(session, customer_id)
     if not customer:
@@ -76,7 +71,19 @@ async def update_customer_service(session: AsyncSession, customer_id: int, custo
 
     await session.commit()
     await session.refresh(customer)
-    return customer
+
+    statement = (
+        select(Customer)
+        .options(
+            selectinload(Customer.support_rep),
+            selectinload(Customer.invoices),
+        )
+        .where(Customer.customer_id == customer.customer_id)
+    )
+    result = await session.execute(statement)
+    customer_with_rels = result.scalar_one()
+
+    return customer_with_rels
 
 
 async def delete_customer_service(session: AsyncSession, customer_id: int) -> bool:

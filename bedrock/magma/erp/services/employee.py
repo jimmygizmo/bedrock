@@ -38,6 +38,7 @@ async def get_employees_service(session: AsyncSession, skip: int = 0, limit: int
     return list(employees)
 
 
+# TODO: CHECK FOR NEEDING OUR FIXES
 async def create_employee_service(session: AsyncSession, employee_in: EmployeeCreate) -> Employee:
     employee = Employee(**employee_in.model_dump())
     session.add(employee)
@@ -46,6 +47,7 @@ async def create_employee_service(session: AsyncSession, employee_in: EmployeeCr
     return employee
 
 
+# TODO: CHECK FOR NEEDING OUR FIXES
 async def update_employee_service(session: AsyncSession, employee_id: int, employee_in: EmployeeUpdate) -> Employee | None:
     employee = await get_employee_service(session, employee_id)
     if not employee:
