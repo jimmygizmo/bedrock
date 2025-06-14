@@ -38,12 +38,32 @@ async def get_customers_service(session: AsyncSession, skip: int = 0, limit: int
     return list(customers)
 
 
+# TODO: THIS DID NOT FAIL A TEST BUT I KNOW IT WILL. FIX IS BELOW. USE selectinload HERE TOO:
+# async def create_customer_service(session: AsyncSession, customer_in: CustomerCreate) -> Customer:
+#     customer = Customer(**customer_in.model_dump())
+#     session.add(customer)
+#     await session.commit()
+#     await session.refresh(customer)
+#     return customer
 async def create_customer_service(session: AsyncSession, customer_in: CustomerCreate) -> Customer:
     customer = Customer(**customer_in.model_dump())
     session.add(customer)
     await session.commit()
     await session.refresh(customer)
-    return customer
+
+    # Re-select the customer with relationships loaded
+    statement = (
+        select(Customer)
+        .options(
+            selectinload(Customer.support_rep),
+            selectinload(Customer.invoices),
+        )
+        .where(Customer.customer_id == customer.customer_id)
+    )
+    result = await session.execute(statement)
+    customer_with_rels = result.scalar_one()
+
+    return customer_with_rels
 
 
 async def update_customer_service(session: AsyncSession, customer_id: int, customer_in: CustomerUpdate) -> Customer | None:
@@ -51,7 +71,7 @@ async def update_customer_service(session: AsyncSession, customer_id: int, custo
     if not customer:
         return None
 
-    for field, value in customer_in.model_dump(exclude_unset=True, by_alias=True).items():
+    for field, value in customer_in.model_dump(exclude_unset=True).items():
         setattr(customer, field, value)
 
     await session.commit()

@@ -72,6 +72,7 @@ class EmployeeRead(ConfigBase):
 
 
 # --------  REFERENCE  --------
+# NOTE: In this employee table we have changed from the original schema and made all date/time TIMEZONE AWARE.
 # NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.
 # CREATE TABLE employee
 # (

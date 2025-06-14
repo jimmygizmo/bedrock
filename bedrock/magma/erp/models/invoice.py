@@ -11,7 +11,7 @@ class Invoice(Base):
 
     invoice_id = Column("InvoiceId", Integer, primary_key=True, autoincrement=True)
     customer_id = Column("CustomerId", Integer, ForeignKey("customers.CustomerId"), nullable=False)
-    invoice_date = Column("InvoiceDate", DateTime, nullable=False)
+    invoice_date = Column("InvoiceDate", DateTime(timezone=True), nullable=False)
     billing_address = Column("BillingAddress", String(70))
     billing_city = Column("BillingCity", String(40))
     billing_state = Column("BillingState", String(40))
@@ -29,6 +29,7 @@ class Invoice(Base):
 
 
 # --------  REFERENCE  --------
+# NOTE: In this invoice table we have changed from the original schema and made all date/time TIMEZONE AWARE.
 # NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.
 # CREATE TABLE invoice
 # (

@@ -21,7 +21,7 @@ async def get_genres(session: AsyncSessionDep, skip: int = 0, limit: int = 10) -
 
 
 async def create_genre(session: AsyncSessionDep, genre_in: GenreCreate) -> Genre:
-    genre = Genre(**genre_in.model_dump(by_alias=False))  # TODO: CLARIFY: False here is a fix. Needs to match field name not alias.
+    genre = Genre(**genre_in.model_dump())
     session.add(genre)
     try:
         await session.commit()
@@ -42,7 +42,7 @@ async def update_genre(session: AsyncSessionDep, genre_id: int, genre_in: GenreU
     if not genre:
         return None
 
-    for field, value in genre_in.model_dump(exclude_unset=True, by_alias=True).items():
+    for field, value in genre_in.model_dump(exclude_unset=True).items():
         setattr(genre, field, value)
 
     await session.commit()

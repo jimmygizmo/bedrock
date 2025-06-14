@@ -23,7 +23,7 @@ async def get_media_types_service(session: AsyncSessionDep, skip: int = 0, limit
 
 
 async def create_media_type_service(session: AsyncSessionDep, media_type_in: MediaTypeCreate) -> MediaType:
-    media_type = MediaType(**media_type_in.model_dump(by_alias=False))  # TODO: CLARIFY: True here possibly caused error for 'Name' begin the alias not the field name
+    media_type = MediaType(**media_type_in.model_dump())
     session.add(media_type)
     try:
         await session.commit()
@@ -41,7 +41,7 @@ async def update_media_type_service(session: AsyncSessionDep, media_type_id: int
     if not media_type:
         return None
 
-    for field, value in media_type_in.model_dump(exclude_unset=True, by_alias=True).items():
+    for field, value in media_type_in.model_dump(exclude_unset=True).items():
         setattr(media_type, field, value)
 
     await session.commit()

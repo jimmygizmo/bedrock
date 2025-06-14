@@ -20,6 +20,7 @@ from magma.erp.routers import albums
 from magma.erp.routers import tracks
 from magma.erp.routers import employees
 from magma.erp.routers import customers
+from magma.erp.routers import invoices
 # Models for seeding
 from magma.erp.models.genre import Genre
 from magma.erp.models.media_type import MediaType
@@ -93,6 +94,7 @@ app.include_router(albums.router)  # Albums
 app.include_router(tracks.router)  # Tracks
 app.include_router(employees.router)  # Employees
 app.include_router(customers.router)  # Customers
+app.include_router(invoices.router)  # Invoices
 
 
 # ########  ROOT API HANDLERS  ########
@@ -132,6 +134,16 @@ async def on_startup():
 
 
 # ########  ERP (Chinook) DATA SEEDING  ########
+#
+# NOTE: The loading process adds a (UTC) timezone awareness to all date/time columns in any of the Chinook CSV files.
+# To follow best-practices, our entire stack is timezone aware and to simplify greatly the handling of timezone-naive
+# data, the best solution is to make that data timezone aware (in the UTC timezone or whatever zone is most appropriate)
+# even before seeding/loading through models or schemas. We have a nice built-in mechanism to do this using the
+# "datetime_fields" optional argument below. To use it you must specify the column names of any date/time column in
+# the CSV file which does not include timezone information. For Chinook, there are only three:
+#    Employee.csv:  Birthdate, HireDate
+#    Invoice.csv:  InvoiceDate
+#
 async def seed_erp_data(session: AsyncSession):
     await load_csv(
             session,
@@ -139,6 +151,7 @@ async def seed_erp_data(session: AsyncSession):
             file_path="data/chinook/Genre.csv",
             pydantic_create_schema=GenreCreate,
             sqlalchemy_model=Genre,
+            datetime_fields=[],
         )
     await load_csv(
             session,
@@ -146,6 +159,7 @@ async def seed_erp_data(session: AsyncSession):
             file_path="data/chinook/MediaType.csv",
             pydantic_create_schema=MediaTypeCreate,
             sqlalchemy_model=MediaType,
+            datetime_fields=[],
         )
     await load_csv(
             session,
@@ -153,6 +167,7 @@ async def seed_erp_data(session: AsyncSession):
             file_path="data/chinook/Artist.csv",
             pydantic_create_schema=ArtistCreate,
             sqlalchemy_model=Artist,
+            datetime_fields=[],
         )
     await load_csv(
             session,
@@ -160,6 +175,7 @@ async def seed_erp_data(session: AsyncSession):
             file_path="data/chinook/Album.csv",
             pydantic_create_schema=AlbumCreate,
             sqlalchemy_model=Album,
+            datetime_fields=[],
         )
     await load_csv(
             session,
@@ -167,6 +183,7 @@ async def seed_erp_data(session: AsyncSession):
             file_path="data/chinook/Track.csv",
             pydantic_create_schema=TrackCreate,
             sqlalchemy_model=Track,
+            datetime_fields=[],
         )
     await load_csv(
             session,
@@ -174,6 +191,7 @@ async def seed_erp_data(session: AsyncSession):
             file_path="data/chinook/Employee.csv",
             pydantic_create_schema=EmployeeCreate,
             sqlalchemy_model=Employee,
+            datetime_fields=["Birthdate", "HireDate"],  # 2 date/time columns to add UTC timezone to in Employee.csv
         )
     await load_csv(
             session,
@@ -181,6 +199,7 @@ async def seed_erp_data(session: AsyncSession):
             file_path="data/chinook/Customer.csv",
             pydantic_create_schema=CustomerCreate,
             sqlalchemy_model=Customer,
+            datetime_fields=[],
         )
     await load_csv(
             session,
@@ -188,6 +207,7 @@ async def seed_erp_data(session: AsyncSession):
             file_path="data/chinook/Invoice.csv",
             pydantic_create_schema=InvoiceCreate,
             sqlalchemy_model=Invoice,
+            datetime_fields=["InvoiceDate"],  # 1 date/time column to add UTC timezone to in Invoice.csv
         )
     await load_csv(
             session,
@@ -195,6 +215,7 @@ async def seed_erp_data(session: AsyncSession):
             file_path="data/chinook/InvoiceLine.csv",
             pydantic_create_schema=InvoiceLineCreate,
             sqlalchemy_model=InvoiceLine,
+            datetime_fields=[],
         )
     await load_csv(
             session,
@@ -202,6 +223,7 @@ async def seed_erp_data(session: AsyncSession):
             file_path="data/chinook/Playlist.csv",
             pydantic_create_schema=PlaylistCreate,
             sqlalchemy_model=Playlist,
+            datetime_fields=[],
         )
     await load_csv(
             session,
@@ -209,6 +231,7 @@ async def seed_erp_data(session: AsyncSession):
             file_path="data/chinook/PlaylistTrack.csv",
             pydantic_create_schema=PlaylistTrackCreate,
             sqlalchemy_model=PlaylistTrack,
+            datetime_fields=[],
         )
 
 

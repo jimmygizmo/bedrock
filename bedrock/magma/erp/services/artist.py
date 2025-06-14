@@ -36,7 +36,7 @@ async def get_artists_service(session: AsyncSession, skip: int = 0, limit: int =
 
 
 async def create_artist_service(session: AsyncSession, artist_in: ArtistCreate) -> Artist:
-    artist = Artist(**artist_in.model_dump(by_alias=True))
+    artist = Artist(**artist_in.model_dump())
     session.add(artist)
     await session.commit()
     await session.refresh(artist)
@@ -48,7 +48,7 @@ async def update_artist_service(session: AsyncSession, artist_id: int, artist_in
     if not artist:
         return None
 
-    for field, value in artist_in.model_dump(exclude_unset=True, by_alias=True).items():
+    for field, value in artist_in.model_dump(exclude_unset=True).items():
         setattr(artist, field, value)
 
     await session.commit()

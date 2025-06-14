@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, condecimal, field_validator
 from typing import Optional
 from magma.validators.shared import validate_alnum_with_spaces
+from magma.erp.schemas.track import TrackRead
 
 
 # ########    PYDANTIC SCHEMA:  invoice_line    ########
@@ -35,6 +36,7 @@ class InvoiceLineUpdate(InvoiceLineBase):
     pass
 
 
+# TODO: Clean comments later. WE ADDED NESTED TRACK TO THIS
 # --------  READ (GET)  --------
 class InvoiceLineRead(ConfigBase):
     invoice_line_id: int = Field(..., alias="InvoiceLineId")
@@ -42,6 +44,18 @@ class InvoiceLineRead(ConfigBase):
     track_id: int = Field(..., alias="TrackId")
     unit_price: condecimal(max_digits=10, decimal_places=2) = Field(..., alias="UnitPrice")
     quantity: int = Field(..., alias="Quantity")
+
+    track: Optional[TrackRead]
+
+# ORIGINAL WAS FLAT AND WORKED FINE - TODO: Test ALL endpoints that used this, now with the nested addition.
+# TODO: Might need to add selectinload to anything that used it before the change.
+# --------  READ (GET)  --------
+# class InvoiceLineRead(ConfigBase):
+#     invoice_line_id: int = Field(..., alias="InvoiceLineId")
+#     invoice_id: int = Field(..., alias="InvoiceId")
+#     track_id: int = Field(..., alias="TrackId")
+#     unit_price: condecimal(max_digits=10, decimal_places=2) = Field(..., alias="UnitPrice")
+#     quantity: int = Field(..., alias="Quantity")
 
 
 # --------  REFERENCE  --------

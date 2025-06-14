@@ -14,8 +14,8 @@ class Employee(Base):
     first_name = Column("FirstName", String(20), nullable=False)
     title = Column("Title", String(30))
     reports_to = Column("ReportsTo", Integer, ForeignKey("employees.EmployeeId"))
-    birth_date = Column("BirthDate", DateTime)
-    hire_date = Column("HireDate", DateTime)
+    birth_date = Column("BirthDate", DateTime(timezone=True))
+    hire_date = Column("HireDate", DateTime(timezone=True))
     address = Column("Address", String(70))
     city = Column("City", String(40))
     state = Column("State", String(40))
@@ -35,6 +35,7 @@ class Employee(Base):
 
 
 # --------  REFERENCE  --------
+# NOTE: In this employee table we have changed from the original schema and made all date/time TIMEZONE AWARE.
 # NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.
 # CREATE TABLE employee
 # (

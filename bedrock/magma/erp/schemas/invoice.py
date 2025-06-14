@@ -2,6 +2,8 @@ from pydantic import BaseModel, Field, field_validator, condecimal
 from typing import Optional
 from datetime import datetime
 from magma.validators.shared import validate_alnum_with_spaces
+from magma.erp.schemas.customer import CustomerRead
+from magma.erp.schemas.invoice_line import InvoiceLineRead
 
 
 # ########    PYDANTIC SCHEMA:  invoice    ########
@@ -48,6 +50,16 @@ class InvoiceUpdate(InvoiceBase):
 
 
 # --------  READ (GET)  --------
+# class InvoiceRead(ConfigBase):
+#     invoice_id: int = Field(..., alias="InvoiceId")
+#     customer_id: int = Field(..., alias="CustomerId")
+#     invoice_date: datetime = Field(..., alias="InvoiceDate")
+#     billing_address: Optional[str] = Field(None, alias="BillingAddress")
+#     billing_city: Optional[str] = Field(None, alias="BillingCity")
+#     billing_state: Optional[str] = Field(None, alias="BillingState")
+#     billing_country: Optional[str] = Field(None, alias="BillingCountry")
+#     billing_postal_code: Optional[str] = Field(None, alias="BillingPostalCode")
+#     total: condecimal(max_digits=10, decimal_places=2) = Field(..., alias="Total")
 class InvoiceRead(ConfigBase):
     invoice_id: int = Field(..., alias="InvoiceId")
     customer_id: int = Field(..., alias="CustomerId")
@@ -59,8 +71,15 @@ class InvoiceRead(ConfigBase):
     billing_postal_code: Optional[str] = Field(None, alias="BillingPostalCode")
     total: condecimal(max_digits=10, decimal_places=2) = Field(..., alias="Total")
 
+    # TODO: For similar patterns we had some custom views for such purposes in magma.erp.schemas.shared
+    #  Not just for shared related views, but for shared related CUSTOM views or just CUSTOM views even can live here,
+    #  even if they are used only once, if they are like these others and have the POTENTIAL to be used more than once.
+    customer: Optional[CustomerRead]
+    invoice_lines: list[InvoiceLineRead] = []  # InvoiceLineRead --> includes nested TrackRead
+
 
 # --------  REFERENCE  --------
+# NOTE: In this invoice table we have changed from the original schema and made all date/time TIMEZONE AWARE.
 # NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.
 # CREATE TABLE invoice
 # (

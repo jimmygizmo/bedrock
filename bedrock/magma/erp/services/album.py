@@ -41,7 +41,7 @@ async def get_albums_service(session: AsyncSession, skip: int = 0, limit: int = 
 
 
 async def create_album_service(session: AsyncSession, album_in: AlbumCreate) -> Album:
-    album = Album(**album_in.model_dump(by_alias=True))
+    album = Album(**album_in.model_dump())
     session.add(album)
     await session.commit()
     await session.refresh(album)
@@ -53,7 +53,7 @@ async def update_album_service(session: AsyncSession, album_id: int, album_in: A
     if not album:
         return None
 
-    for field, value in album_in.model_dump(exclude_unset=True, by_alias=True).items():
+    for field, value in album_in.model_dump(exclude_unset=True).items():
         setattr(album, field, value)
 
     await session.commit()

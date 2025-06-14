@@ -39,7 +39,7 @@ async def get_employees_service(session: AsyncSession, skip: int = 0, limit: int
 
 
 async def create_employee_service(session: AsyncSession, employee_in: EmployeeCreate) -> Employee:
-    employee = Employee(**employee_in.model_dump(by_alias=True))
+    employee = Employee(**employee_in.model_dump())
     session.add(employee)
     await session.commit()
     await session.refresh(employee)
@@ -51,7 +51,7 @@ async def update_employee_service(session: AsyncSession, employee_id: int, emplo
     if not employee:
         return None
 
-    for field, value in employee_in.model_dump(exclude_unset=True, by_alias=True).items():
+    for field, value in employee_in.model_dump(exclude_unset=True).items():
         setattr(employee, field, value)
 
     await session.commit()
