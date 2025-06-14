@@ -1,6 +1,9 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
-from magma.erp.schemas.shared import ArtistRead
+from magma.erp.schemas.shared import ArtistRead  # Replaced with ArtistSimpleRead to fix a nested lazy-loading loop.
+from magma.erp.schemas.shared import ArtistSimpleRead
+from magma.erp.schemas.shared import TrackSimpleRead
+from magma.erp.schemas.track import TrackRead
 from magma.validators.shared import validate_alnum_with_spaces
 
 
@@ -44,8 +47,13 @@ class AlbumUpdate(ConfigBase):
 class AlbumRead(ConfigBase):
     album_id: int = Field(..., alias="AlbumId")
     title: str = Field(..., alias="Title")
-    artist: ArtistRead
-
+    artist: ArtistSimpleRead
+    tracks: list[TrackSimpleRead]
+    # TODO: TrackRead needs a custom tuned version for here. 1. Need not show Album of Track,
+    # When this had ArtistRead, since that has albums, it created a nested, lazy-loading loop, which is another way
+    #  you get greenlet errors.
+    # TODO: UPDATE: Now has TrackSimpleRead, a quick shot at a cleaner view of Tracks via Album
+    #   NAME IDEA for that cleaner read: TrckReadForAblumView
 
 # --------  REFERENCE  --------
 # NOTE: Bedrock does not use raw SQL for DB init. SQLAlchemy models are used. This SQL is only here for reference.

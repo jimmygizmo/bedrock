@@ -1,5 +1,39 @@
+"""
+Centralized Model Initialization for ERP Module
+
+This file is responsible for:
+- Importing all model classes in dependency-safe order
+- Defining inter-model SQLAlchemy relationships *after* all classes are loaded
+- Avoiding circular import issues that can arise from defining relationships in-class
+- Ensuring SQLAlchemy relationship mappings are finalized via `configure_mappers()`
+
+IMPORTANT:
+- Relationships such as `Album.artist` and `Artist.albums` are NOT defined in their class bodies.
+  They are bound here using `sqlalchemy.orm.relationship` after all classes are imported.
+- This is a strategic architectural choice to solve circular dependency issues cleanly.
+
+DEVELOPER NOTES:
+- Tools like PyCharm or linters may raise warnings about unresolved attributes on model classes.
+  These can be safely ignored because the relationships *do* exist at runtime.
+- To help with static analysis, consider adding `if TYPE_CHECKING:` stubs to model classes:
+
+    ```python
+    from typing import TYPE_CHECKING
+    if TYPE_CHECKING:
+        from magma.erp.models.artist import Artist
+
+    class Album(Base):
+        ...
+        artist: "Artist"
+    ```
+
+- Always `import magma.erp.models` before accessing models to guarantee relationships are bound.
+- Avoid re-defining relationships elsewhere — this module is the single source of truth.
+"""
 # This __init__.py is unique as it is designed to solve circular relationship and import order issues by getting all
-# models imported before further defining, certain relationships (involved in any circularity)
+# models imported before further defining certain relationships (involved in any circularity)
+# TODO: Consolidate and re-write notes/comments above and below here.
+
 
 from magma.erp.models.genre import Genre
 from magma.erp.models.media_type import MediaType
@@ -19,7 +53,14 @@ from sqlalchemy.orm import configure_mappers, relationship
 # ########    LATE BINDINGS FOR FORWARD RELATIONSHIPS    ########
 
 
-# Rebind forward relationship after all classes are loaded
+# Rebind forward relationships after all classes are loaded.
+#
+# This is an ideal strategy for large, circularly-dependent projects.
+#
+# NOTE: Always import magma.erp.models before using any of the models to guarantee relationship bindings happen.
+# NOTE: Always eager-load relationships that will be accessed in the Pydantic response,
+#       e.g. with selectinload(Album.artist).
+
 
 # Genre ↔ Track(s)      (Genre is a dependency for Track)      (Many Tracks per Genre)
 Track.genre = relationship("Genre", back_populates="tracks")

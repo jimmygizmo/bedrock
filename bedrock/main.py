@@ -16,6 +16,7 @@ from magma.routers import users
 from magma.erp.routers import genres
 from magma.erp.routers import media_types
 from magma.erp.routers import artists
+from magma.erp.routers import albums
 # Models for seeding
 from magma.erp.models.genre import Genre
 from magma.erp.models.media_type import MediaType
@@ -83,6 +84,7 @@ app.include_router(users.router)  # Users
 app.include_router(genres.router)  # Genres
 app.include_router(media_types.router)  # MediaTypes
 app.include_router(artists.router)  # Artists
+app.include_router(albums.router)  # Albums
 
 
 # ########  ROOT API HANDLERS  ########
