@@ -10,12 +10,34 @@ from magma.erp.schemas.album import AlbumCreate, AlbumUpdate
 # ########    SERVICE:  album    ########
 
 
+# TODO: Add this to formal docs:
+# ***  HOW TO FIGURE OUT WHEN YOU NEED THE EAGER LOADING FROM selecinload - AND WHAT YOU NEED TO EAGER LOAD  ***
+# NOTE: AlbumRead includes these:
+#     artist: ArtistSimpleRead
+#                 class ArtistSimpleRead(ConfigBase):
+#                     artist_id: int = Field(alias="ArtistId")
+#                     name: str = Field(alias="Name")
+#     tracks: list[TrackSimpleRead]
+#                 class TrackSimpleRead(ConfigBase):
+#                     track_id: int
+#                     name: str
+#                     media_type: Optional[MediaTypeRead]
+#                     genre: Optional[GenreRead]
+#                    ... other flat metadata fields ...
+#
+# **** HENCE - AlbumRead UNDER ASYNC ALWAYS REQUIRES:
+#             selectinload(Album.artist),
+#             selectinload(Album.tracks).selectinload(Track.genre),
+#             selectinload(Album.tracks).selectinload(Track.media_type),
+
+
 async def get_album_service(session: AsyncSession, album_id: int) -> Album | None:
     statement = (
         select(Album)
         .options(
             selectinload(Album.artist),
-            selectinload(Album.tracks),
+            selectinload(Album.tracks).selectinload(Track.genre),
+            selectinload(Album.tracks).selectinload(Track.media_type),
         )
         .where(Album.album_id == album_id)
     )
