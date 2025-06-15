@@ -35,8 +35,7 @@ async def get_customers_service(session: AsyncSession, skip: int = 0, limit: int
     )
     result = await session.execute(statement)
     customers = result.scalars().all()
-    # return list(customers)  # list() here does nothing functionally, but will suppress PyCharm type warning
-    return customers
+    return list(customers)  # list() here does nothing but does suppress false static type warnings
 
 
 async def create_customer_service(session: AsyncSession, customer_in: CustomerCreate) -> Customer:

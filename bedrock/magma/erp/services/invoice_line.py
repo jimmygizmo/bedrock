@@ -28,7 +28,7 @@ async def get_invoice_lines_service(session: AsyncSession, skip: int = 0, limit:
         .limit(limit)
     )
     result = await session.execute(statement)
-    return list(result.scalars().all())  # list() here is not functionally needed. Already a list, but PyCharm warns!
+    return list(result.scalars().all())  # list() here does nothing but does suppress false static type warnings
 
 
 async def create_invoice_line_service(session: AsyncSession, invoice_line_in: InvoiceLineCreate) -> InvoiceLine:
@@ -48,7 +48,7 @@ async def create_invoice_line_service(session: AsyncSession, invoice_line_in: In
     return invoice_line_with_rels
 
 
-# TODO: NEEDS selectinload FIX
+# No eager loading (selectinload) needed
 async def update_invoice_line_service(session: AsyncSession, invoice_line_id: int, invoice_line_in: InvoiceLineUpdate) -> InvoiceLine | None:
     invoice_line = await get_invoice_line_service(session, invoice_line_id)
     if not invoice_line:

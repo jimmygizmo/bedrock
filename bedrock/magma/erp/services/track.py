@@ -37,10 +37,10 @@ async def get_tracks_service(session: AsyncSession, skip: int = 0, limit: int = 
     )
     result = await session.execute(statement)
     tracks = result.scalars().all()
-    return list(tracks)
+    return list(tracks)  # list() here does nothing but does suppress false static type warnings
 
 
-# TODO: CHECK FOR NEEDING OUR FIXES
+# No eager loading (selectinload) needed
 async def create_track_service(session: AsyncSession, track_in: TrackCreate) -> Track:
     track = Track(**track_in.model_dump())
     session.add(track)
@@ -49,7 +49,7 @@ async def create_track_service(session: AsyncSession, track_in: TrackCreate) -> 
     return track
 
 
-# TODO: CHECK FOR NEEDING OUR FIXES
+# No eager loading (selectinload) needed
 async def update_track_service(session: AsyncSession, track_id: int, track_in: TrackUpdate) -> Track | None:
     track = await get_track_service(session, track_id)
     if not track:

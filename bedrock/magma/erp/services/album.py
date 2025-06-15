@@ -37,7 +37,7 @@ async def get_albums_service(session: AsyncSession, skip: int = 0, limit: int = 
     )
     result = await session.execute(statement)
     albums = result.scalars().all()
-    return list(albums)
+    return list(albums)  # list() here does nothing but does suppress false static type warnings
 
 
 async def create_album_service(session: AsyncSession, album_in: AlbumCreate) -> Album:

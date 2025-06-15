@@ -17,10 +17,10 @@ async def get_genres(session: AsyncSessionDep, skip: int = 0, limit: int = 10) -
     statement = select(Genre).offset(skip).limit(limit)
     result = await session.execute(statement)
     genres = result.scalars().all()
-    return genres
+    return genres   # No type warning here and no list()! Most similar methods give type warning w/o list()
 
 
-# NOTE: This works fine without selectinload eager loading
+# No eager loading (selectinload) needed
 async def create_genre(session: AsyncSessionDep, genre_in: GenreCreate) -> Genre:
     genre = Genre(**genre_in.model_dump())
     session.add(genre)
@@ -36,7 +36,7 @@ async def create_genre(session: AsyncSessionDep, genre_in: GenreCreate) -> Genre
     #     raise HTTPException(status_code=400, detail="User with this email already exists.")
 
 
-# NOTE: This works fine without selectinload eager loading
+# No eager loading (selectinload) needed
 async def update_genre(session: AsyncSessionDep, genre_id: int, genre_in: GenreUpdate) -> Optional[Genre]:
     statement = select(Genre).where(Genre.genre_id == genre_id)
     result = await session.execute(statement)

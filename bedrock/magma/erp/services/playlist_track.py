@@ -32,7 +32,7 @@ async def get_playlist_tracks_service(session: AsyncSession, skip: int = 0, limi
         .limit(limit)
     )
     result = await session.execute(statement)
-    return list(result.scalars().all())
+    return list(result.scalars().all())  # list() here does nothing but does suppress false static type warnings
 
 
 async def create_playlist_track_service(session: AsyncSession, playlist_track_in: PlaylistTrackCreate) -> PlaylistTrack:

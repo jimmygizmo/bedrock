@@ -19,10 +19,14 @@ async def get_media_types_service(session: AsyncSessionDep, skip: int = 0, limit
     media_types = result.scalars().all()
     # TODO: In services/artist.py we had to force a similar return value to list() because PyCharm warned about the
     #   sequence type being returned. Why no similar issue here? Figure that out and maybe services/artist.py benefits.
-    return media_types
+    #   UPDATE: Some of the list() cases do use an intermediate variable at the end, so I tested. This is NOT the cause.
+    #     You would not expect the intermediate varaible to have an effect and it does not. Cause of need for list()
+    #     to suppress the type warning remains unknown. Ultimately this is PyCharm weirdness but it still is an issue
+    #     to have phantom warnings in your static analysis.
+    return media_types  # -NO- list() NEEDED HERE TO SUPPRESS STATIC TYPE WARNING BUT NEEDED IN SIMILAR CODE ELSEWHERE!
 
 
-# TODO: CHECK FOR NEEDING OUR FIXES
+# No eager loading (selectinload) needed
 async def create_media_type_service(session: AsyncSessionDep, media_type_in: MediaTypeCreate) -> MediaType:
     media_type = MediaType(**media_type_in.model_dump())
     session.add(media_type)
@@ -35,7 +39,7 @@ async def create_media_type_service(session: AsyncSessionDep, media_type_in: Med
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-# TODO: CHECK FOR NEEDING OUR FIXES
+# No eager loading (selectinload) needed
 async def update_media_type_service(session: AsyncSessionDep, media_type_id: int, media_type_in: MediaTypeUpdate) -> Optional[MediaType]:
     statement = select(MediaType).where(MediaType.media_type_id == media_type_id)
     result = await session.execute(statement)

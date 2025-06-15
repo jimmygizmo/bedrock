@@ -38,7 +38,7 @@ async def get_employees_service(session: AsyncSession, skip: int = 0, limit: int
     return list(employees)
 
 
-# NOTE: This method works fine without the need for selectinload
+# No eager loading (selectinload) needed
 async def create_employee_service(session: AsyncSession, employee_in: EmployeeCreate) -> Employee:
     employee = Employee(**employee_in.model_dump())
     session.add(employee)
@@ -47,7 +47,7 @@ async def create_employee_service(session: AsyncSession, employee_in: EmployeeCr
     return employee
 
 
-# NOTE: This method works fine without the need for selectinload
+# No eager loading (selectinload) needed
 async def update_employee_service(session: AsyncSession, employee_id: int, employee_in: EmployeeUpdate) -> Employee | None:
     employee = await get_employee_service(session, employee_id)
     if not employee:

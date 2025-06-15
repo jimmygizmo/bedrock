@@ -25,11 +25,10 @@ async def get_artists_service(session: AsyncSession, skip: int = 0, limit: int =
     )
     result = await session.execute(statement)
     artists =  result.scalars().all()
-    # return list(artists)  # list() here does nothing functionally, but will suppress PyCharm type warning
-    return artists
+    return list(artists)  # list() here does nothing but does suppress false static type warnings
 
 
-# NOTE: This works fine without selectinload eager loading
+# No eager loading (selectinload) needed
 async def create_artist_service(session: AsyncSession, artist_in: ArtistCreate) -> Artist:
     artist = Artist(**artist_in.model_dump())
     session.add(artist)
@@ -38,7 +37,7 @@ async def create_artist_service(session: AsyncSession, artist_in: ArtistCreate) 
     return artist
 
 
-# NOTE: This works fine without selectinload eager loading
+# No eager loading (selectinload) needed
 async def update_artist_service(session: AsyncSession, artist_id: int, artist_in: ArtistUpdate) -> Artist | None:
     artist = await get_artist_service(session, artist_id)
     if not artist:
