@@ -26,12 +26,6 @@ class GenreCreate(GenreBase):
     @field_validator('name')
     def v_name_alnum_with_spaces(cls, v: Optional[str]) -> Optional[str]:
         return validate_alnum_with_spaces(v, "Genre.name")
-    # def name_alphanumeric(cls, v: Optional[str]) -> Optional[str]:
-    #     if v is not None:
-    #         v = v.strip()
-    #         if not v.replace(" ", "").isalnum():
-    #             raise ValueError("Field 'Genre.name' must be alphanumeric (spaces allowed)")
-    #     return v
 
 
 # --------  UPDATE/PUT  --------
@@ -41,12 +35,6 @@ class GenreUpdate(ConfigBase):
     @field_validator('name')
     def v_name_alnum_with_spaces(cls, v: Optional[str]) -> Optional[str]:
         return validate_alnum_with_spaces(v, "Genre.name")
-    # def name_alphanumeric(cls, v: Optional[str]) -> Optional[str]:
-    #     if v is not None:
-    #         v = v.strip()
-    #         if not v.replace(" ", "").isalnum():
-    #             raise ValueError("Field 'Genre.name' must be alphanumeric (spaces allowed)")
-    #     return v
 
 
 # --------  READ/GET  --------

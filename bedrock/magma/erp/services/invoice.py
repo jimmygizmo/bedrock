@@ -36,22 +36,12 @@ async def get_invoices_service(session: AsyncSession, skip: int = 0, limit: int 
     result = await session.execute(statement)
     return list(result.scalars().all())  # list() here is not functionally needed. Already a list, but PyCharm warns!
 
-# TODO: Clean this soon. We needed the selectinload fix.
-# async def get_invoices_service(session: AsyncSession, skip: int = 0, limit: int = 100) -> list[Invoice]:
-#     statement = select(Invoice).offset(skip).limit(limit)
-#     result = await session.execute(statement)
-#     invoices = result.scalars().all()
-#     return list(invoices)
-
 
 async def create_invoice_service(session: AsyncSession, invoice_in: InvoiceCreate) -> Invoice:
     invoice = Invoice(**invoice_in.model_dump())
     session.add(invoice)
     await session.commit()
     await session.refresh(invoice)
-    # TODO: This fix may be needed in a few other CREATES. HAVE NOT TESTED ALL OF THE ONES WITH RELATIONS.
-    # return invoice  # NO!!!!!! THIS MIGHT NOT WORK BECAUSE WE ARE ASYNC - NEEDS TO EAGER-LOAD THE RELATIONSHIPS
-    # Re-load the invoice with relationships eager loaded
     statement = (
         select(Invoice)
         .options(
@@ -66,7 +56,7 @@ async def create_invoice_service(session: AsyncSession, invoice_in: InvoiceCreat
     return invoice_with_rels
 
 
-# TODO: CHECK FOR NEEDING OUR FIXES
+# NOTE: This works fine without selectinload eager loading
 async def update_invoice_service(session: AsyncSession, invoice_id: int, invoice_in: InvoiceUpdate) -> Invoice | None:
     invoice = await get_invoice_service(session, invoice_id)
     if not invoice:

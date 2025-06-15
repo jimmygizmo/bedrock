@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field, field_validator, ConfigDict
-from typing import Optional, List, TYPE_CHECKING
+from pydantic import BaseModel, Field
+from typing import Optional
 # from magma.erp.schemas.genre import GenreRead
 # from magma.erp.schemas.media_type import MediaTypeRead
 # from magma.erp.schemas.invoice_line import InvoiceLineRead

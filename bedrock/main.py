@@ -24,6 +24,7 @@ from magma.erp.routers import invoices
 from magma.erp.routers import invoice_lines
 from magma.erp.routers import playlists
 from magma.erp.routers import playlist_tracks
+from magma.erp.routers import roots
 # Models for seeding
 from magma.erp.models.genre import Genre
 from magma.erp.models.media_type import MediaType
@@ -88,6 +89,7 @@ app.add_middleware(
 # ########  ROUTERS  ########
 
 # MAIN ROUTERS
+app.include_router(roots.router)  # Root handlers
 app.include_router(users.router)  # Users
 # ERP ROUTERS
 app.include_router(genres.router)  # Genres
@@ -101,13 +103,6 @@ app.include_router(invoices.router)  # Invoices
 app.include_router(invoice_lines.router)  # InvoiceLines
 app.include_router(playlists.router)  # Playlist
 app.include_router(playlist_tracks.router)  # PlaylistTrack
-
-
-# ########  ROOT API HANDLERS  ########
-
-@app.get("/")
-async def root():
-    return {"message": "This is the root/default app in Bedrock 'Magma' FastAPI application."}
 
 
 # ########  EVENT HANDLERS  ########
@@ -140,17 +135,21 @@ async def on_startup():
 
 
 # ########  ERP (Chinook) DATA SEEDING  ########
-#
-# NOTE: The loading process adds a (UTC) timezone awareness to all date/time columns in any of the Chinook CSV files.
-# To follow best-practices, our entire stack is timezone aware and to simplify greatly the handling of timezone-naive
-# data, the best solution is to make that data timezone aware (in the UTC timezone or whatever zone is most appropriate)
-# even before seeding/loading through models or schemas. We have a nice built-in mechanism to do this using the
-# "datetime_fields" optional argument below. To use it you must specify the column names of any date/time column in
-# the CSV file which does not include timezone information. For Chinook, there are only three:
+
+# NOTE: The loading process adds a (UTC) timezone awareness to all date/time columns configured below. You must do this
+# to ALL date/time columns/fields. To follow best-practices, our entire stack is timezone aware and to simplify
+# greatly the handling of timezone-naive data, the best solution is to make that data timezone aware (in the UTC
+# timezone or whatever zone is most appropriate) even before seeding/loading through models or schemas. We have a
+# nice built-in mechanism to do this using the "datetime_fields" optional argument below. To use it you must specify
+# the column names of any date/time column in the CSV file which does not include timezone information.
+# For Chinook, there are a total of three columns/fields which we must force from naive to aware and into UTC timezone:
 #    Employee.csv:  Birthdate, HireDate
 #    Invoice.csv:  InvoiceDate
-#
+
 async def seed_erp_data(session: AsyncSession):
+    # Seed tables in dependency order
+
+    # 1. Genre    (-- no deps --)
     await load_csv(
             session,
             model_name='genre',
@@ -159,6 +158,8 @@ async def seed_erp_data(session: AsyncSession):
             sqlalchemy_model=Genre,
             datetime_fields=[],
         )
+
+    # 2. MediaType    (-- no deps --)
     await load_csv(
             session,
             model_name='media_type',
@@ -167,6 +168,8 @@ async def seed_erp_data(session: AsyncSession):
             sqlalchemy_model=MediaType,
             datetime_fields=[],
         )
+
+    # 3. Artist    (-- no deps --)
     await load_csv(
             session,
             model_name='artist',
@@ -175,6 +178,8 @@ async def seed_erp_data(session: AsyncSession):
             sqlalchemy_model=Artist,
             datetime_fields=[],
         )
+
+    # 4. Album    (depends on Artist)
     await load_csv(
             session,
             model_name='album',
@@ -183,6 +188,8 @@ async def seed_erp_data(session: AsyncSession):
             sqlalchemy_model=Album,
             datetime_fields=[],
         )
+
+    # 5. Track    (depends on Album, Genre, MediaType)
     await load_csv(
             session,
             model_name='track',
@@ -191,6 +198,8 @@ async def seed_erp_data(session: AsyncSession):
             sqlalchemy_model=Track,
             datetime_fields=[],
         )
+
+    # 6. Employee    (self-referencing for ReportsTo)
     await load_csv(
             session,
             model_name='employee',
@@ -199,6 +208,8 @@ async def seed_erp_data(session: AsyncSession):
             sqlalchemy_model=Employee,
             datetime_fields=["Birthdate", "HireDate"],  # 2 date/time columns to add UTC timezone to in Employee.csv
         )
+
+    # 7. Customer    (depends on Employee via SupportRepId)
     await load_csv(
             session,
             model_name='customer',
@@ -207,6 +218,8 @@ async def seed_erp_data(session: AsyncSession):
             sqlalchemy_model=Customer,
             datetime_fields=[],
         )
+
+    # 8. Invoice    (depends on Customer)
     await load_csv(
             session,
             model_name='invoice',
@@ -215,6 +228,8 @@ async def seed_erp_data(session: AsyncSession):
             sqlalchemy_model=Invoice,
             datetime_fields=["InvoiceDate"],  # 1 date/time column to add UTC timezone to in Invoice.csv
         )
+
+    # 9. InvoiceLine    (depends on Invoice, Track)
     await load_csv(
             session,
             model_name='invoice_line',
@@ -223,6 +238,8 @@ async def seed_erp_data(session: AsyncSession):
             sqlalchemy_model=InvoiceLine,
             datetime_fields=[],
         )
+
+    # 10. Playlist    (-- no deps --)
     await load_csv(
             session,
             model_name='playlist',
@@ -231,6 +248,8 @@ async def seed_erp_data(session: AsyncSession):
             sqlalchemy_model=Playlist,
             datetime_fields=[],
         )
+
+    # 11. PlaylistTrack    (depends on Playlist, Track)
     await load_csv(
             session,
             model_name='playlist_track',
@@ -239,6 +258,9 @@ async def seed_erp_data(session: AsyncSession):
             sqlalchemy_model=PlaylistTrack,
             datetime_fields=[],
         )
+
+
+# -------- NOTES --------
 
 
 # Based on relationships in the well-known Chinook DB schema, we must load the CSV mock data in the

@@ -40,27 +40,43 @@ async def get_albums_service(session: AsyncSession, skip: int = 0, limit: int = 
     return list(albums)
 
 
-# TODO: CHECK FOR NEEDING OUR FIXES
 async def create_album_service(session: AsyncSession, album_in: AlbumCreate) -> Album:
     album = Album(**album_in.model_dump())
     session.add(album)
     await session.commit()
     await session.refresh(album)
-    return album
+    statement = (
+        select(Album)
+        .options(
+            selectinload(Album.artist),
+            selectinload(Album.tracks),
+        )
+        .where(Album.album_id == album.album_id)
+    )
+    result = await session.execute(statement)
+    album_with_rels = result.scalar_one()
+    return album_with_rels
 
 
-# TODO: CHECK FOR NEEDING OUR FIXES
 async def update_album_service(session: AsyncSession, album_id: int, album_in: AlbumUpdate) -> Album | None:
     album = await get_album_service(session, album_id)
     if not album:
         return None
-
     for field, value in album_in.model_dump(exclude_unset=True).items():
         setattr(album, field, value)
-
     await session.commit()
     await session.refresh(album)
-    return album
+    statement = (
+        select(Album)
+        .options(
+            selectinload(Album.artist),
+            selectinload(Album.tracks),
+        )
+        .where(Album.album_id == album.album_id)
+    )
+    result = await session.execute(statement)
+    album_with_rels = result.scalar_one()
+    return album_with_rels
 
 
 async def delete_album_service(session: AsyncSession, album_id: int) -> bool:

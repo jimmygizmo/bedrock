@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from magma.validators.shared import validate_alnum_with_spaces
 
 
 # ########    PYDANTIC SCHEMA:  playlist_track    ########

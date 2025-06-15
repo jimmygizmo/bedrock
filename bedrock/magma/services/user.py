@@ -9,21 +9,22 @@ from sqlalchemy.exc import IntegrityError
 # ########    SERVICE:  user    ########
 
 
-async def get_user(session: AsyncSessionDep, user_id: int):
+async def get_user_service(session: AsyncSessionDep, user_id: int):
     statement = select(User).where(User.id == user_id)
     result = await session.execute(statement)
     found_user = result.scalar_one_or_none()
     return found_user
 
 
-async def get_users(session: AsyncSessionDep, skip: int = 0, limit: int = 10):
+async def get_users_service(session: AsyncSessionDep, skip: int = 0, limit: int = 10):
     statement = select(User).offset(skip).limit(limit)
     result = await session.execute(statement)
     users = result.scalars().all()
     return users
 
 
-async def create_user(session: AsyncSessionDep, user: UserCreate) -> User:
+# TODO: by_alias=True causes us problems with ERP tables. Likely an issue on User as well. Just remove it after checks.
+async def create_user_service(session: AsyncSessionDep, user: UserCreate) -> User:
     new_user = User(**user.model_dump(by_alias=True))
     session.add(new_user)
     try:
@@ -36,4 +37,7 @@ async def create_user(session: AsyncSessionDep, user: UserCreate) -> User:
     except Exception as e:
         await session.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+# TODO: Add delete handler and service method
 

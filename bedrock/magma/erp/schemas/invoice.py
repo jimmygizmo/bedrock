@@ -50,16 +50,6 @@ class InvoiceUpdate(InvoiceBase):
 
 
 # --------  READ (GET)  --------
-# class InvoiceRead(ConfigBase):
-#     invoice_id: int = Field(..., alias="InvoiceId")
-#     customer_id: int = Field(..., alias="CustomerId")
-#     invoice_date: datetime = Field(..., alias="InvoiceDate")
-#     billing_address: Optional[str] = Field(None, alias="BillingAddress")
-#     billing_city: Optional[str] = Field(None, alias="BillingCity")
-#     billing_state: Optional[str] = Field(None, alias="BillingState")
-#     billing_country: Optional[str] = Field(None, alias="BillingCountry")
-#     billing_postal_code: Optional[str] = Field(None, alias="BillingPostalCode")
-#     total: condecimal(max_digits=10, decimal_places=2) = Field(..., alias="Total")
 class InvoiceRead(ConfigBase):
     invoice_id: int = Field(..., alias="InvoiceId")
     customer_id: int = Field(..., alias="CustomerId")

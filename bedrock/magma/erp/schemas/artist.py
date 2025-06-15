@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator, ConfigDict
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List
 from magma.erp.schemas.shared import AlbumRead
 from magma.validators.shared import validate_alnum_with_spaces

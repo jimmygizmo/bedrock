@@ -17,8 +17,6 @@ async def get_artist_service(session: AsyncSession, artist_id: int) -> Artist | 
 
 
 async def get_artists_service(session: AsyncSession, skip: int = 0, limit: int = 100) -> list[Artist]:
-    # statement = select(Artist).offset(skip).limit(limit)
-    # TODO: FIX: We must eagerly load the related records, particularly in an ASYNC context:
     statement = (
         select(Artist)
         .options(selectinload(Artist.albums))
@@ -27,14 +25,11 @@ async def get_artists_service(session: AsyncSession, skip: int = 0, limit: int =
     )
     result = await session.execute(statement)
     artists =  result.scalars().all()
-    # TODO: Figure out why we need to force this sequence to a list before returning in this one? Seems like other
-    #   endpoint would have a similar issue. Update comments later with explanation of a consistent solution.
-    #   UPDATE: The response models are different and artists includes related albums so that could be related to the
-    #   issue as the response model for genre read is a simple list and that one does not need coercing like this one.
-    return list(artists)
+    # return list(artists)  # list() here does nothing functionally, but will suppress PyCharm type warning
+    return artists
 
 
-# TODO: CHECK FOR NEEDING OUR FIXES
+# NOTE: This works fine without selectinload eager loading
 async def create_artist_service(session: AsyncSession, artist_in: ArtistCreate) -> Artist:
     artist = Artist(**artist_in.model_dump())
     session.add(artist)
@@ -43,7 +38,7 @@ async def create_artist_service(session: AsyncSession, artist_in: ArtistCreate) 
     return artist
 
 
-# TODO: CHECK FOR NEEDING OUR FIXES
+# NOTE: This works fine without selectinload eager loading
 async def update_artist_service(session: AsyncSession, artist_id: int, artist_in: ArtistUpdate) -> Artist | None:
     artist = await get_artist_service(session, artist_id)
     if not artist:
