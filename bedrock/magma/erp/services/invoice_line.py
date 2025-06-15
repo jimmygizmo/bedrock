@@ -48,6 +48,7 @@ async def create_invoice_line_service(session: AsyncSession, invoice_line_in: In
     return invoice_line_with_rels
 
 
+# TODO: NEEDS selectinload FIX
 async def update_invoice_line_service(session: AsyncSession, invoice_line_id: int, invoice_line_in: InvoiceLineUpdate) -> InvoiceLine | None:
     invoice_line = await get_invoice_line_service(session, invoice_line_id)
     if not invoice_line:

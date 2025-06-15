@@ -23,6 +23,7 @@ from magma.erp.routers import customers
 from magma.erp.routers import invoices
 from magma.erp.routers import invoice_lines
 from magma.erp.routers import playlists
+from magma.erp.routers import playlist_tracks
 # Models for seeding
 from magma.erp.models.genre import Genre
 from magma.erp.models.media_type import MediaType
@@ -99,6 +100,7 @@ app.include_router(customers.router)  # Customers
 app.include_router(invoices.router)  # Invoices
 app.include_router(invoice_lines.router)  # InvoiceLines
 app.include_router(playlists.router)  # Playlist
+app.include_router(playlist_tracks.router)  # PlaylistTrack
 
 
 # ########  ROOT API HANDLERS  ########

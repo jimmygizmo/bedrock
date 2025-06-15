@@ -31,6 +31,7 @@ async def get_playlists_service(session: AsyncSession, skip: int = 0, limit: int
 #     result = await session.execute(statement)
 #     return result.scalar_one()
 
+
 async def create_playlist_service(session: AsyncSession, playlist_in: PlaylistCreate) -> Playlist:
     playlist = Playlist(**playlist_in.model_dump())
     session.add(playlist)
