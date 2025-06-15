@@ -11,13 +11,13 @@ router = APIRouter(prefix="/invoices", tags=["invoices"])
 
 @router.get("/", response_model=list[InvoiceRead])
 async def get_invoices(session: AsyncSessionDep, skip: int = 0, limit: int = 100):
-    log.info(f"📖 >>>>    /invoices/")
+    log.info(f"📖 >>>>    /invoices/    GET ALL")
     return await get_invoices_service(session, skip, limit)
 
 
 @router.get("/{invoice_id}", response_model=InvoiceRead)
 async def get_invoice(session: AsyncSessionDep, invoice_id: int):
-    log.info(f"👁️ --->    /invoices/{invoice_id}")
+    log.info(f"👁️ --->    /invoices/{invoice_id}    GET")
     invoice = await get_invoice_service(session, invoice_id)
     if not invoice:
         raise HTTPException(status_code=404, detail="Invoice not found")
@@ -26,13 +26,13 @@ async def get_invoice(session: AsyncSessionDep, invoice_id: int):
 
 @router.post("/", response_model=InvoiceRead, status_code=201)
 async def create_invoice(session: AsyncSessionDep, invoice_in: InvoiceCreate):
-    log.info(f"☘️ ++++    /invoices/")
+    log.info(f"☘️ ++++    /invoices/    CREATE")
     return await create_invoice_service(session, invoice_in)
 
 
 @router.put("/{invoice_id}", response_model=InvoiceRead)
 async def update_invoice(session: AsyncSessionDep, invoice_id: int, invoice_in: InvoiceUpdate):
-    log.info(f"✏️ ====    /invoices/{invoice_id}")
+    log.info(f"✏️ ====    /invoices/{invoice_id}    UPDATE")
     invoice = await update_invoice_service(session, invoice_id, invoice_in)
     if not invoice:
         raise HTTPException(status_code=404, detail="Invoice not found")
@@ -41,7 +41,7 @@ async def update_invoice(session: AsyncSessionDep, invoice_id: int, invoice_in: 
 
 @router.delete("/{invoice_id}", status_code=204)
 async def delete_invoice(session: AsyncSessionDep, invoice_id: int):
-    log.info(f"️💥 ----    /invoices/{invoice_id}")
+    log.info(f"️💥 ----    /invoices/{invoice_id}    DELETE")
     success = await delete_invoice_service(session, invoice_id)
     if not success:
         raise HTTPException(status_code=404, detail="Invoice not found")

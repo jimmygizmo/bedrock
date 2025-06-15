@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from magma.core.logger import log
 from magma.core.dependencies import AsyncSessionDep
 from magma.erp.schemas.playlist_track import PlaylistTrackCreate, PlaylistTrackUpdate, PlaylistTrackRead

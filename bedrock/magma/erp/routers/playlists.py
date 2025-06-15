@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from magma.core.logger import log
 from magma.core.dependencies import AsyncSessionDep
 from magma.erp.schemas.playlist import PlaylistCreate, PlaylistUpdate, PlaylistRead
 from magma.erp.services.playlist import *
 
+
 # ########    ROUTER:  playlist    ########
+
 
 router = APIRouter(prefix="/playlists", tags=["playlists"])
 

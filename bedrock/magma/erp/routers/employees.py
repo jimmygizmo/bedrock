@@ -13,13 +13,13 @@ router = APIRouter(prefix="/employees", tags=["employees"])
 
 @router.get("/", response_model=list[EmployeeRead])
 async def get_employees(session: AsyncSessionDep, skip: int = 0, limit: int = 100):
-    log.info(f"📖 >>>>    /employees/")
+    log.info(f"📖 >>>>    /employees/    GET ALL")
     return await get_employees_service(session, skip, limit)
 
 
 @router.get("/{employee_id}", response_model=EmployeeRead)
 async def get_employee(session: AsyncSessionDep, employee_id: int):
-    log.info(f"👁️ --->    /employees/{employee_id}")
+    log.info(f"👁️ --->    /employees/{employee_id}    GET")
     employee = await get_employee_service(session, employee_id)
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
@@ -28,13 +28,13 @@ async def get_employee(session: AsyncSessionDep, employee_id: int):
 
 @router.post("/", response_model=EmployeeRead, status_code=201)
 async def create_employee(session: AsyncSessionDep, employee_in: EmployeeCreate):
-    log.info(f"☘️ ++++    /employees/")
+    log.info(f"☘️ ++++    /employees/    CREATE")
     return await create_employee_service(session, employee_in)
 
 
 @router.put("/{employee_id}", response_model=EmployeeRead)
 async def update_employee(session: AsyncSessionDep, employee_id: int, employee_in: EmployeeUpdate):
-    log.info(f"✏️ ====    /employees/{employee_id}")
+    log.info(f"✏️ ====    /employees/{employee_id}    UPDATE")
     employee = await update_employee_service(session, employee_id, employee_in)
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
@@ -43,7 +43,7 @@ async def update_employee(session: AsyncSessionDep, employee_id: int, employee_i
 
 @router.delete("/{employee_id}", status_code=204)
 async def delete_employee(session: AsyncSessionDep, employee_id: int):
-    log.info(f"💥 ----    /employees/{employee_id}")
+    log.info(f"💥 ----    /employees/{employee_id}    DELETE")
     success = await delete_employee_service(session, employee_id)
     if not success:
         raise HTTPException(status_code=404, detail="Employee not found")

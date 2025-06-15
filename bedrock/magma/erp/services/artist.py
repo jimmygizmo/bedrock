@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
-from sqlalchemy.exc import NoResultFound
 
 from magma.erp.models.artist import Artist
 from magma.erp.schemas.artist import ArtistCreate, ArtistUpdate
