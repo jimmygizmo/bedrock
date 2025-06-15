@@ -6,12 +6,38 @@ Chinook ERP Database Schema
 * Please refer to the schema diagram in the project at:
 /extras/erp-schema-chinook.png
 
-* Each model and each schema file has a copy of the SQL CREATE for the associated table. That is a good reference.
+* Each model and each schema file has a copy of the SQL CREATE for the associated table for a nearby reference.
 
 
 ** All of the SQL (PostreSQL dialect from the Chinook project) is included in this project in the file:
 Chinook_PostgreSql_AutoIncrementPKs.sql
 ('auto-increments simply indicates this is a modern schema definition, using recent Postgres primary key mechanisms)'
+
+# OFFICIAL - SQL
+https://github.com/lerocha/chinook-database
+
+# CSV VERSION DATA FILES
+# https://www.kaggle.com/datasets/anurag629/chinook-csv-dataset
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+TIMEZONE AWARENESS
+==================
+
+The Chinook DB schema and data is all timezone zaive and does not contain any timezone information and the DB columns
+do not require or allow timezones. This is the only think about Chinook I change a little to be more modern and best
+practice but I don't actually change the original CSV data I use. I just add a UTC timezone to that data during
+seeding. The other main point is that in the SQLAlchemy models, I do specify timezone awareness for all DateTime
+columns and all TIMESTAMP columns or any related objects. The entire Bedrock stack is TIMEZONE AWARE as all modern
+apps must be. Within Bedrock, all date/time operations expect, assume or require timezone data and formats. During
+seeding, a UTC timezone is 'forced' or added to the Chinook data, in only 3 needed columns in 2 different tables and
+we do it with this call:
+
+datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+
+See code and comments in main.py and seed.py if you need further detail.
+
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -95,7 +121,8 @@ tracks (1) ────< invoice_lines (n)
 ------------------------------------------------------------------------------------------------------------------------
 
 
-🗂 Schema Snapshot
+Schema Snapshot
+===============
 
 
 artists
