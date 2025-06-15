@@ -8,6 +8,7 @@ import magma.core.config as cfg
 from magma.core.logger import log
 from magma.core.database import async_engine, Base
 # Routers - Base
+from magma.routers import roots
 from magma.routers import users
 # Routers - ERP
 from magma.erp.routers import genres
@@ -21,7 +22,6 @@ from magma.erp.routers import invoices
 from magma.erp.routers import invoice_lines
 from magma.erp.routers import playlists
 from magma.erp.routers import playlist_tracks
-from magma.erp.routers import roots
 # Models for seeding
 from magma.erp.models.genre import Genre
 from magma.erp.models.media_type import MediaType

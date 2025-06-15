@@ -4,8 +4,9 @@ import os
 
 # ########    LOGGING INITIALIZATION    ########
 
-fastapi_log_level: str = os.getenv("FASTAPI_LOG_LEVEL", "🟥 ERROR: MISSING ENV VAR: FASTAPI_LOG_LEVEL").upper()
-print(f"✅ INITIALIZING FASTAPI LOGGING: fastapi_log_level from ENV: {fastapi_log_level}")
+
+fastapi_log_level: str = os.getenv("FASTAPI_LOG_LEVEL", "DEBUG").upper()
+print(f"✅ Initializing FastAPI logging: fastapi_log_level from ENV: {fastapi_log_level}")
 
 
 LOG_LEVELS = {

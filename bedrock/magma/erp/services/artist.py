@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
-
 from magma.erp.models.artist import Artist
 from magma.erp.schemas.artist import ArtistCreate, ArtistUpdate
 
@@ -10,7 +9,11 @@ from magma.erp.schemas.artist import ArtistCreate, ArtistUpdate
 
 
 async def get_artist_service(session: AsyncSession, artist_id: int) -> Artist | None:
-    statement = select(Artist).where(Artist.artist_id == artist_id)
+    statement = (
+        select(Artist)
+        .options(selectinload(Artist.albums))
+    ).where(Artist.artist_id == artist_id)
+
     result = await session.execute(statement)
     artist = result.scalar_one_or_none()
     return artist

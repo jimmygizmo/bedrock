@@ -5,6 +5,7 @@ from magma.core.logger import log
 
 # ########    CONFIGURATION:  SETTINGS & ENVIRONMENT    ########
 
+
 # ----  BASIC SETTINGS
 
 # When True and only for log.debug() calls, show log messages that contain sensitive information like passwords.
