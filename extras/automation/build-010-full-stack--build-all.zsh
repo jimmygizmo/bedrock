@@ -1,5 +1,6 @@
 #! /usr/bin/env zsh
 
+# TODO: /auto/ has moved and paths need updating. Entire /auto/ system is being upgraded. Coming soon!
 # All /auto/* scripts must be run from the project root directory.
 
 echo
