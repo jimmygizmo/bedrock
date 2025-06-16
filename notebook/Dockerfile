@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 WORKDIR /home/bedrock/workspace
 
-COPY book.ipynb /home/bedrock/workspace/
+COPY bedrock.ipynb /home/bedrock/workspace/
 
 EXPOSE 8888
 
@@ -36,6 +36,6 @@ EXPOSE 8888
 #      "--NotebookApp.password=''",
 #      "--ServerApp.iopub_data_rate_limit=10000000",
 #      "--ServerApp.rate_limit_window=10.0",
-#      "--LabApp.default_url='/lab/tree/book.ipynb'",
+#      "--LabApp.default_url='/lab/tree/bedrock.ipynb'",
 #    ]
 

@@ -16,8 +16,10 @@ def normalized_row(row: dict) -> dict:
 
 
 def make_aware_datetime(dt_str: str) -> datetime:
-    # For this format in our CSV: "YYYY-MM-DD HH:MM:SS"  # TODO: Confirm
+    # For this format in our CSV: "YYYY-MM-DD HH:MM:SS"  # TODO: Confirm. UPDATE: CONFIRMED:
+    # Examples from data:    1962-02-18 00:00:00    2002-08-14 00:00:00
     return datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+    # This feature is working great. CSV can stay original/naive; upon load they become TZ aware like entire stack.
 
 
 async def load_csv(
@@ -35,7 +37,7 @@ async def load_csv(
 
     path = Path(file_path)
     if not path.exists():
-        log.error(f"❌ File not found: {file_path}")
+        log.error(f"❌  File not found: {file_path}")
         return
 
     with path.open("r", encoding="utf-8") as f:
@@ -62,11 +64,11 @@ async def load_csv(
                 count += 1
             except ValidationError as ve:
                 errors += 1
-                log.warning(f"⚠️ Validation error on row {row_num}: {ve.errors()}")
+                log.warning(f"⚠️  Validation error on row {row_num}: {ve.errors()}")
             except Exception as e:
                 errors += 1
-                log.error(f"❌ Unexpected error on row {row_num}: {e}")
+                log.error(f"❌  Unexpected error on row {row_num}: {e}")
 
         await session.commit()
-        log.info(f"✅ {count} {model_name}s loaded successfully. {errors} row(s) had issues.")
+        log.info(f"✅  {count} {model_name}s loaded successfully. {errors} row(s) had issues.")
 

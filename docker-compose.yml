@@ -74,6 +74,7 @@ services:
 #      - ./vol-env:/env
     environment:
       - "STACK_ENV=DEVELOPMENT"
+      - "DB_JOIN_OPTIMIZE=false"
       - "FASTAPI_LOG_LEVEL=DEBUG"
       - "POSTGRES_DB=bedrockdb"
       - "POSTGRES_USER=bedrock"
@@ -121,6 +122,6 @@ services:
 #      "--NotebookApp.password=''",
 #      "--ServerApp.iopub_data_rate_limit=10000000",
 #      "--ServerApp.rate_limit_window=10.0",
-#      "--LabApp.default_url='/lab/tree/traffic.ipynb'",
+#      "--LabApp.default_url='/lab/tree/bedrock.ipynb'",
 #    ]
 

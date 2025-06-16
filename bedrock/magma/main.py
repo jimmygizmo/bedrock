@@ -53,17 +53,17 @@ from magma.seed.seed import load_csv
 # ########  ENTRYPOINT: Bedrock Platform - FastAPI Application Module:  magma  ########
 
 
-log.info("🔥🔥🔥  BEDROCK MAGMA STARTING  🔥🔥🔥")
+log.info("🪨🔥🪨🔥🪨    BEDROCK MAGMA STARTING    🪨🔥🪨🔥🪨")
 
 app = None  # Ensures global scope visibility for guvicorn
 
 if cfg.stack_env == 'DEVELOPMENT':
     app = FastAPI()
-    log.info(f"⚠️  Swagger/OpenAPI/ReDoc enabled.  Danger!!!  ⛔ DEVELOPMENT ⛔  - "
+    log.info(f"⚠️  OpenAPI & ReDoc enabled.  Danger!!!  🟥  DEVELOPMENT  🟥  - "
           f"cfg.stack_env: {cfg.stack_env}")
 else:
     app = FastAPI(openapi_url=None, docs_url=None, redoc_url=None)
-    log.info(f"⚠️  Swagger/OpenAPI/ReDoc NOT ENABLED.  SAFE FOR:  🍀 PRODUCTION 🍀  - "
+    log.info(f"⚠️  OpenAPI & ReDoc NOT ENABLED.  SAFE FOR  🍀  PRODUCTION  🍀  - "
              f"cfg.stack_env: {cfg.stack_env}")
 
 
@@ -122,13 +122,13 @@ async def on_startup():
         row_count = result.scalar()
         if row_count == 0:
             log.warn("⚠️  Album (albums) table is empty!!!  Seeding all ERP (Chinook) mock data...")
-            log.warn("⚠️️  IMPORTANT!  ⛔  PLEASE WAIT UNTIL DATA LOADING COMPLETES IN A FEW MINUTES  ⛔")
+            log.warn("⚠️️  IMPORTANT!  🟧  PLEASE WAIT UNTIL DATA SEEDING COMPLETES  🟧")
             # TODO: Add maintenance mode which disables access to all endpoints of the API. Enter maintenance mode here.
             # Loading in depdendency order (children first). See table dependency comments at the end of this file.
             await seed_erp_data(session)
             # TODO: Exit maintenance mode here, restoring access to all API endpoints.
         else:
-            log.info(f"✅ Album (albums) table already has {row_count} rows. Skipping seed.")
+            log.info(f"✅  Album (albums) table already has {row_count} rows. Skipping seed.")
 
 
 # ########  ERP (Chinook) DATA SEEDING  ########

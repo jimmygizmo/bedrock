@@ -6,6 +6,9 @@ from magma.core.logger import log
 # ########    CONFIGURATION:  SETTINGS & ENVIRONMENT    ########
 
 
+# TODO: Configuration is about to be tottally re-written. This was a quick and very dirty solution.
+
+
 # ----  BASIC SETTINGS
 
 # When True and only for log.debug() calls, show log messages that contain sensitive information like passwords.
@@ -24,26 +27,29 @@ DBHOST: str = 'bedrock-postgres'
 
 dotenv.load_dotenv(dotenv.find_dotenv())
 
-log.info(f"☑️ CWD via os.getcwd(): {os.getcwd()}")  # (Debug .env loading.)
+log.info(f"☑️  CWD via os.getcwd(): {os.getcwd()}")  # (Debug .env loading.)
 
-stack_env: str = os.getenv("STACK_ENV", "🟥 ERROR: MISSING ENV VAR:  STACK_ENV")
-log.info(f"✅ STACK_ENV: {stack_env}")  # Controls SAFETY FACTORS FOR PRODUCTION and more.
+stack_env: str = os.getenv("STACK_ENV", "🟥  ERROR: MISSING ENV VAR:  STACK_ENV")
+log.info(f"☑️  STACK_ENV: {stack_env}")  # Controls SAFETY FACTORS FOR PRODUCTION and more.
 
-postgres_user: str = os.getenv("POSTGRES_USER", "🟥 ERROR: MISSING ENV VAR:  POSTGRES_USER")
+postgres_user: str = os.getenv("POSTGRES_USER", "🟥  ERROR: MISSING ENV VAR:  POSTGRES_USER")
 if DEBUG_LOG_SECRETS_OK:
-    log.debug(f"✅ ⚠️ POSTGRES_USER: {postgres_user}  ❗ INSECURE ❗")
+    log.debug(f"☑️ ⚠️  POSTGRES_USER: {postgres_user}  ❗ INSECURE ❗")
 
-postgres_password: str = os.getenv("POSTGRES_PASSWORD", "🟥 ERROR: MISSING ENV VAR:  POSTGRES_PASSWORD")
+postgres_password: str = os.getenv("POSTGRES_PASSWORD", "🟥  ERROR: MISSING ENV VAR:  POSTGRES_PASSWORD")
 if DEBUG_LOG_SECRETS_OK:
-    log.debug(f"✅ ⚠️ POSTGRES_PASSWORD: {postgres_password}  ❗ INSECURE ❗")
+    log.debug(f"☑️ ⚠️  POSTGRES_PASSWORD: {postgres_password}  ❗ INSECURE ❗")
 
+# db_join_optimize: str = os.getenv("DB_JOIN_OPTIMIZE", "🟥  ERROR: MISSING ENV VAR:  DB_JOIN_OPTIMIZE")
+# log.debug(f"☑️  DB_JOIN_OPTIMIZE: {db_join_optimize}  🧪  EXPERIMENTAL  🧪")
+db_join_optimize = False
 
 # ----  COMPOSITE CONFIG VALUES
 
 DATABASE_URL: str = f"postgresql+asyncpg://{postgres_user}:{postgres_password}@{DBHOST}/{DBNAME}"
 
 if DEBUG_LOG_SECRETS_OK:
-    log.debug(f"✅ ⚠️ Composed DATABASE_URL: {DATABASE_URL}  ❗ INSECURE ❗")
+    log.debug(f"☑️ ⚠️  Composed DATABASE_URL: {DATABASE_URL}  ❗ INSECURE ❗")
 
 
 # ----  SPECIAL SETTINGS
@@ -54,6 +60,6 @@ if DEBUG_LOG_SECRETS_OK:
 # DB creation/init and DB schema migration forward and backward will be handled by Alembic.
 CREATE_ON_STARTUP = True
 if CREATE_ON_STARTUP:
-    log.info(f"✅ ⚠️ CREATE_ON_STARTUP: {str(CREATE_ON_STARTUP)}    "
-             "(NOTE: Temporary DB init solution, prior to using Alembic.)")
+    log.info(f"☑️ ⚠️  CREATE_ON_STARTUP: {str(CREATE_ON_STARTUP)}    "
+             "(NOTE: Alembic DB migrations will replace this.)")
 

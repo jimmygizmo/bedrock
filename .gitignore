@@ -1,7 +1,9 @@
 # .gitignore generally for: Flask, React, Next.js, IntelliJ IDEs, MacOS, Docker, more
 #
-# SmartMetal.ai
+# Bedrock
 #
+
+devnotes/
 
 # TODO: Clarify: Not sure why I just gota /build/ dir under /smartmetal/  = /smartmetal/build/
 # But .gitignore did not cover it. I'm really not clear what made it appear now. It's been a few builds
