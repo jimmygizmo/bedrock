@@ -7,16 +7,6 @@
 
 #### *The simplest, fastest, best-practice way to build an advanced full-stack solution.*
 
-#### 🟧 Complex Web Applications, Social Networks, Browser-based Games
-
-#### 🟦 Machine Learning, Data Science, RAG, Generative AI, ETL Pipeline
-
-#### 🟩 Microservices, SAAS and PAAS, Integrations, Legacy Modernization
-
-#### 🟪 Websites, Dashboards, Monitoring, Communications (Pub/Sub/Queue)
-
-#### 🟥 Automation, DevOps, CI/CD, SCM, Big Data (ML training). Cloud apps.
-
 ---------------------------------------------------------------------------
 
 #### ✅ Fastest FastAPI Possible (the only fully asynchronous Python stack)
@@ -24,6 +14,10 @@
 #### ✅ Best-practice Python design patterns featuring Dependency Injection
 
 #### ✅ Clean FastAPI architecture: models, schemas, routers, services, core
+
+#### ✅ Includes 11 table ERP DB with complete CRUD API and rich mock data
+
+#### ✅ Unit and integration tests for advanced FastAPI with coverage reports
 
 #### ✅ Automatic API docs & tools via both OpenAPI (aka Swagger) and Redocly
 

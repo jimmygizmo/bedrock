@@ -39,6 +39,12 @@ pytest
 pytest-asyncio
 httpx
 
+# Test coverage and static analysis reports
+pytest-cov
+coverage
+pytest-html
+diff-cover
+
 
 # REQUIREMENTS FOR BEDROCK-GIS - KEPT HERE FOR CONVENIENCE UNTIL THE NEXT REV.
 # Everything new in Bedrock always merges into Bedrock-GIS for the most part. (For now, until I change the way
