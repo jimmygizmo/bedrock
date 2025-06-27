@@ -21,8 +21,10 @@ MENU_OPTIONS = {
           "cd bedrock && pytest --cov=app --cov-report=term --cov-report=html --verbose tests/ && cd .."),
     "6": ("Reinstall the FastAPI microservices module 'magma' locally",
           "pip uninstall -y magma && cd bedrock && pip install . && cd .."),
-    "7": ("Exit", None),
-}
+    "7": ("Git status",
+          "git status"),
+    "8": ("Exit menu only (stack up/down state will not change)", None),
+}  # NOTE: Update the # of the exit key in on_key() below. Exit # is hardcoded there.
 
 
 class DevMenu(App):
@@ -41,6 +43,7 @@ class DevMenu(App):
 
     def render_menu(self) -> str:
         return "\n".join(
+            # TODO: NOTE! The styling codes are working in the lower/menu window, just not in the upper/log window.
             f"[bold magenta]{key}.[/bold magenta] {desc}" +
             (" [green](selected)[/green]" if key == self.selected else "")
             for key, (desc, _) in MENU_OPTIONS.items()
@@ -48,7 +51,9 @@ class DevMenu(App):
 
 
     def on_mount(self):
-        self.query_one(Log).write_line("[bold yellow]Welcome to the Bedrock Developer Menu![/bold yellow]")
+        # TODO: Styling codes are not working in the upper/log window (only in the lower/menu window)
+        # self.query_one(Log).write_line("[bold yellow]Welcome to the Bedrock Developer Menu![/bold yellow]")
+        self.query_one(Log).write_line("================  Bedrock Developer Menu ================")
 
 
     def action_quit(self):
@@ -61,7 +66,7 @@ class DevMenu(App):
             self.selected = key
             self.refresh_menu()
             desc, cmd = MENU_OPTIONS[key]
-            if key == "7":
+            if key == "8":
                 self.exit()
             else:
                 self.run_command(desc, cmd)
@@ -79,8 +84,11 @@ class DevMenu(App):
 
     def run_command(self, description, command):
         log = self.query_one(Log)
-        log.write_line(f"[yellow]>> {description}[/yellow]")
+        log.write_line(f"\n")
+        # log.write_line(f"[yellow]>> {description}[/yellow]")  # TODO: Styling codes not currently working in upp/log window.
+        # log.write_line(f">> {description}")
         log.write_line(f"$ {command}")
+        log.write_line(f"\n")
 
         try:
             process = Popen(command, shell=True, stdout=PIPE, stderr=PIPE, bufsize=1)

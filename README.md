@@ -96,7 +96,14 @@ is when you will most likely need those permissions. (I'll cover DB wiping durin
 On the first startup, Magma (the FastAPI Microservices Python app) will create all the database objects
 including the logical database itself, if necessary. The stack should work immediately. If not, simply restart it.
 
-    docker-compose up 
+    docker-compose up
+    
+    *NEW* Scroll down and read about the new Bedrock Developer Menu (menu.py), which automates such actions!
+
+>  ***Optional: Jupyter Notebook Server, pgAdmin DB GUI*** - For quick and efficient core stack builds out of the box,
+> the pre-configured Jupyter and pgAdmin components are disabled in the docker-compose.yml file by default. To use
+> either or both with Bedrock, simply uncomment the corresponding Docker  Compose service block.
+> For more information, see: [Optional Bedrock Components](./extras/MORE.md)
 
 ### Operate the API and auto-generated API documentation (OpenAPI and Redocly)
 
@@ -109,8 +116,6 @@ Bedrock always uses ports in the 40-thousand ranges when mapping outside the Com
 > numbers to find the best mapping. Bedrock has many potential modules so this scheme will be used to make
 > sense of potentially many port numbers in a complex stack.
 
-### Use your Browser to have a look at the API. Try these URLs:
-
 
     For OpenAPI interactive docs and API tools, navigate to:
     https://127.0.0.1:48000/docs
@@ -118,16 +123,35 @@ Bedrock always uses ports in the 40-thousand ranges when mapping outside the Com
     For Redocly interactive docs, navigate to:
     https://127.0.0.1:48000/redoc
 
-    Use the REST API:
-    https://127.0.0.1:48000/
-    https://127.0.0.1:48000/users/
 
-    * YES, ONLY ONE ENDPOINT WITH THE FIRST RELEASE - Auth and other basic endpoints will be added very soon!
+### Use your Browser to explore the "Magma" API Endpoints
 
+For a full list of endpoints and more information about the Magma FastAPI application at the core of the
+Bedrock stack, please read [Bedrock Magma API](./extras/API.md). Bedrock is a Python FastAPI platform and Magma
+is the rich, modern, best-practice code base to use as your API starting point.
+
+Magma features over 40 CRUD endpoints for the rich ERP database schema and mock data set "Chinook" which is
+the basis for an online music store like iTunes. Chinook has a relational schema of medium complexity with
+circular relations and other advanced characteristics to give you a real-world foundation to learn from
+and build your own enterprise solution upon. Basic endpoints are provided for all 11 tables. A few examples:
+
+
+    List all music tracks using paging parameters:
+    http://localhost:48000/tracks/?skip=0&limit=100
+
+    List all artists:
+    http://localhost:48000/artists
+
+    Get the playlist with playlist_id 3:
+    http://localhost:48000/playlists/3
+
+    * See the "Bedrock Magma API" link above (the extras/API.md file) or the built-in OpenAPI docs/tools for details.
 
 ### Shut down the stack
 
     hit ctrl-C    (in the same console)
+    
+    *NEW* Scroll down and read about the new Bedrock Developer Menu (menu.py), which automates such actions!
 
 #### Visit [SmartMetal.ai](http://smartmetal.ai/ "SmartMetal.ai") for more information.
 #### The Bedrock Stack is the foundation on which SmartMetal.ai is built.
@@ -176,6 +200,25 @@ lots of updates to this repo coming soon, valuable to my fellow developers most 
 
 ---------------------------------------------------------------------------
 
+## Bedrock Developer Menu - menu.py
+
+The Bedrock Developer Menu is a really slick little tool which displays the colorful combined docker log for
+all containers while giving you a menu of single keypress command macros for your most common and repetitive
+development actions. These are the handful of command sequences a full stack developer types into a terminal
+constantly, sometimes over a hundred times in a day. Having these under a single keypress is a wonderful
+benefit. A tiny but incredibly valuable addition to Bedrock: menu.py
+
+- 1 - Start the Bedrock full stack & Magma microservices
+- 2 - Stop the entire stack
+- 3 - Delete the entire logical DB and all data
+- 4 - Rebuild the Bedrock FastAPI container with current Magma code
+- 5 - Run unit tests
+- 6 - Reinstall the FastAPI microservices module 'magma' locally
+- 7 - Git status
+- 8 - Exit menu only (stack up/down state will not change)
+
+---------------------------------------------------------------------------
+
 ## Extensive Documentation, Guides, Tutorials
 
 #### 🔥 *Extensive documentation is under development and coming soon!*
@@ -187,10 +230,13 @@ Chinook mock data simpler. However other than the aliases, all DB objects are re
 best practices and use lowercase_underscore naming and plural table names, with singlular model-related object names.
 A more accurate diagram is pending.
 
-![Diagram](extras/erp-schema-chinook.png)
+![Diagram](./extras/erp-schema-chinook.png)
 
 A lot more documentation is on the way. The project is currently well structured, clean and largely self-documenting,
 so don't delay in starting to build your amazing projects on Bedrock!
+
+
+---------------------------------------------------------------------------
 
 ## License
 
@@ -198,7 +244,7 @@ This project has been authored, engineered and developed by James Mannix with bo
 
  More information at: [SmartMetal.ai](http://smartmetal.ai/ "SmartMetal.ai")
 
-This project is licensed under the [MIT License](./LICENSE.txt).
+This project is licensed under the [MIT License](./extras/LICENSE.txt).
 
 - ✅ Free to use, modify, and distribute
 - ✅ Commercial use allowed
@@ -207,7 +253,7 @@ This project is licensed under the [MIT License](./LICENSE.txt).
 - ❌ No re-packaging/re-distribution as a full-stack template
 - ✅ Distribute and profit from your custom solutions with no restrictions
 
-### Copyright (c) 2025 James Mannix, SmartMetal.ai
+#### Copyright (c) 2025 James Mannix, SmartMetal.ai
 
 ---------------------------------------------------------------------------
 
